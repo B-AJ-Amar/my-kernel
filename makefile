@@ -6,5 +6,10 @@ build:
 run:
 	qemu-system-x86_64 --hda ./bin/boot.bin
 
+debug:
+	qemu-system-x86_64 \
+    --hda ./bin/boot.bin \
+    -S -gdb tcp::1234
+
 clean:
 	rm -f ./bin/boot.bin
