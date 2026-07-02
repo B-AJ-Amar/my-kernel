@@ -1,5 +1,4 @@
 ENTRY(kernel)
-OUTPUT_FORMAT(binary)
 
 
 SECTIONS {
