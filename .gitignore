@@ -59,3 +59,5 @@ dkms.conf
 
 gi_*
 bin/
+.vscode/
+build/
