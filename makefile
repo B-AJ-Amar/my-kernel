@@ -1,10 +1,12 @@
-.PHONY: all build docker-build build-local build-kernel build-boot build-boot-elf change-own concatinate run debug clean
+.PHONY: all build docker-build build-local build-kernel build-boot build-boot-elf change-own concatinate run debug clean format
 
 CFLAGS = -g -ffreestanding -m32 -Iinclude -nostdlib
 all: clean build run
 
-build: docker-build
+format:
+	find . -regex '.*\.\(cpp\|hpp\|cc\|cxx\|c\|h\)' -exec clang-format -style=LLVM -i {} \;
 
+build: docker-build
 
 
 docker-build:
