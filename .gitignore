@@ -61,3 +61,4 @@ gi_*
 bin/
 .vscode/
 build/
+.gdb_history

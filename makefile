@@ -1,7 +1,7 @@
-.PHONY: all build docker-build build-local build-kernel build-boot change-own concatinate run debug clean
+.PHONY: all build docker-build build-local build-kernel build-boot build-boot-elf change-own concatinate run debug clean
 
+CFLAGS = -g -ffreestanding -m32 -Iinclude -nostdlib
 all: clean build run
-
 
 build: docker-build
 
@@ -14,7 +14,7 @@ docker-build:
 		kernel-builder \
 		make build-local
 
-build-local: clean build-kernel build-boot concatinate
+build-local: clean build-kernel build-boot build-boot-elf concatinate
 
 
 concatinate:
@@ -22,11 +22,7 @@ concatinate:
 
 
 build-kernel:
-	i686-elf-gcc \
-		-g \
-		-ffreestanding \
-		-m32 \
-		-nostdlib \
+	i686-elf-gcc $(CFLAGS) \
 		-c kernel/kernel.c \
 		-o bin/kernel.o
 
@@ -43,6 +39,9 @@ build-kernel:
 build-boot:
 	./scripts/kernel-size.sh
 	nasm -f bin boot/boot.asm -o bin/boot.bin
+
+build-boot-elf:
+	nasm -f elf32 -DELF_BUILD boot/boot.asm -o bin/boot.o
 
 
 run:
