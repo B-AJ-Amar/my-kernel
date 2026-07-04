@@ -37,10 +37,10 @@ start:
     
     
     jmp CODE_SEG:start_protected_mode
-        hlt
+    hlt
     
-    boot_drive:
-        db 0
+boot_drive:
+    db 0
         
 ; read from disk https://en.wikipedia.org/wiki/INT_13H
 load_kernel:
@@ -51,7 +51,7 @@ load_kernel:
     mov dl, [boot_drive]
     mov ah, 0x02;write mode
     ;! dont remove token i will use it in the build time
-    mov al, 1 ; <SECTORS_LEN>  number of sectors (i will upt this in build time)
+    mov al, 17 ; <SECTORS_LEN>  number of sectors (i will upt this in build time)
     int 0x13
 
     jc disk_error
@@ -128,11 +128,11 @@ start_protected_mode:
     mov esi, KERNEL_ADDR_RM 
     mov edi, KERNEL_ADDR_PM    
     ;! dont remove token i will use it in the build time
-    mov ecx, 512             ;<KERNEL_SIZE> TODO: count dwords to copy 
+    mov ecx, 8193 ; <KERNEL_SIZE> TODO: count dwords to copy 
     rep movsd 
 
     jmp CODE_SEG:KERNEL_ADDR_PM
-    ; hlt
+    hlt
 
 
 times 510-($-$$) db 0

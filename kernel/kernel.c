@@ -1,5 +1,8 @@
+#include <drivers/vga.h>
+
 void kernel(void) {
-  *(char *)0xB8000 = 'K';
+  vga_clear();
+  vga_write("Hello from the kernel");
 
   while (1) {
   }

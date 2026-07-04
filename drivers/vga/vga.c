@@ -1,4 +1,5 @@
 #include <drivers/vga.h>
+#include <io.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -29,8 +30,12 @@ static uint8_t col = 0;
 
 static void scroll(void);
 static void update_cursor(void);
+static void vga_update_cursor(uint16_t pos);
+static void reset_cursor(void);
 static inline uint16_t get_cursor(void);
 static inline uint16_t vga_char(char character, uint8_t color);
+static void disable_cursor();
+static void enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 
 void vga_set_color(uint8_t fg, uint8_t bg) { color = bg << 4 | fg; }
 
@@ -39,8 +44,10 @@ void vga_reset_color(void) { color = VGA_COLOR_BLACK << 4 | VGA_COLOR_WHITE; }
 void vga_clear(void) {
   vga_reset_color();
   for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
-    vga_putchar(" ");
+    vga_putchar(' ');
   }
+  reset_cursor();
+  vga_update_cursor(0);
 }
 
 uint16_t vga_char(char character, uint8_t color) {
@@ -48,17 +55,38 @@ uint16_t vga_char(char character, uint8_t color) {
 }
 
 static void update_cursor(void) {
-  if (col < VGA_WIDTH)
+  if (col < VGA_WIDTH - 1)
     col++;
   else {
     col = 0;
-    if (row < VGA_WIDTH)
+    if (row < VGA_HEIGHT - 1)
       row++;
     // TODO: add scroll()
   }
+  vga_update_cursor(get_cursor());
+}
+
+/*
+0x3d4 : selector
+0x3D5 : write/read
+0x0f  : low cursor
+0x0e  : high cursor
+
+*/
+void vga_update_cursor(uint16_t pos) {
+  outb(0x3D4, 0x0F);
+  outb(0x3D5, pos & 0xFF);
+
+  outb(0x3D4, 0x0E);
+  outb(0x3D5, pos >> 8);
 }
 
 static uint16_t get_cursor(void) { return row * VGA_WIDTH + col; }
+
+void reset_cursor(void) {
+  col = 0;
+  row = 0;
+}
 
 void vga_putchar(char c) {
   vga_buffer[get_cursor()] = vga_char(c, color);
@@ -68,4 +96,17 @@ void vga_putchar(char c) {
 void vga_write(const char *str) {
   while (*str)
     vga_putchar(*str++);
+}
+
+void disable_cursor() {
+  outb(0x3D4, 0x0A);
+  outb(0x3D5, 0x20);
+}
+
+void enable_cursor(uint8_t cursor_start, uint8_t cursor_end) {
+  outb(0x3D4, 0x0A);
+  outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
+
+  outb(0x3D4, 0x0B);
+  outb(0x3D5, (inb(0x3D5) & 0xE0) | cursor_end);
 }
