@@ -1,7 +1,11 @@
 [bits 16]
-%ifndef ELF_BUILD
-[org 0x7c00]
+%ifdef ELF_BUILD
+section .text
+global start
+%else
+org 0x7C00
 %endif
+
 CODE_SEG equ gdt_code_seg - gdt_start; should be 0x8 (selector)
 DATA_SEG equ gdt_data_seg - gdt_start; 0x10
 
@@ -128,9 +132,9 @@ start_protected_mode:
     mov esi, KERNEL_ADDR_RM 
     mov edi, KERNEL_ADDR_PM    
     ;! dont remove token i will use it in the build time
-    mov ecx, 8193 ; <KERNEL_SIZE> TODO: count dwords to copy 
+    mov ecx, 2048 ; <KERNEL_SIZE> TODO: count dwords to copy 
     rep movsd 
-
+kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM
     hlt
 

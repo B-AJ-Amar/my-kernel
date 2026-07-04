@@ -76,6 +76,8 @@ debug:
 #		-drive file=$(DISK_IMG),format=raw \
 #		-gdb stdio -S
 
+gdb:
+	pwndbg -x debug.gdb
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
 	mkdir -p $(BUILD_DIR) $(BIN_DIR)
