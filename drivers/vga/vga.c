@@ -5,6 +5,7 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
+#define TAB_SIZE 4
 // TODO:add specal chars support (e.g \n \t ...)
 // TODO: add move cursor and insert in the cusor
 enum vga_color {
@@ -91,10 +92,6 @@ void reset_cursor(void) {
   row = 0;
 }
 
-void vga_putchar(char c) {
-  vga_buffer[get_cursor()] = vga_char(c, color);
-  update_cursor();
-}
 
 void vga_write(const char *str) {
   while (*str)
@@ -120,3 +117,40 @@ void scroll(void) {
     vga_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + i] = vga_char(' ', color);
   }
 }
+
+void vga_putchar(char c) {
+  switch (c) {
+  case '\n':
+    col = 0;
+    if (row < VGA_HEIGHT - 1)
+      row++;
+    else
+      scroll();
+    break;
+  case '\r':
+    col = 0;
+    break;
+  case '\b':
+    if (col > 0) col-=2;
+    else {
+      col = VGA_WIDTH -1;
+      row--;
+    }
+  case '\t':
+    col = ((col / TAB_SIZE) + 1) * TAB_SIZE;
+    if (col >= VGA_WIDTH) {
+      col = 0;
+      if (row < VGA_HEIGHT - 1)
+        row++;
+      else
+        scroll();
+    }
+    break;
+  default:
+    vga_buffer[get_cursor()] = vga_char(c, color);
+    update_cursor();
+
+    break;
+  }
+} 
+

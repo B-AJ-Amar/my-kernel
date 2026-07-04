@@ -2,7 +2,7 @@
 
 void kernel(void) {
   vga_clear();
-  vga_write("Hello from the kernel");
+  vga_write("\tHell \bo from the \nkernel");
 
   while (1) {
   }
