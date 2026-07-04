@@ -5,6 +5,7 @@
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
 // TODO:add specal chars support (e.g \n \t ...)
+// TODO: add move cursor and insert in the cusor
 enum vga_color {
   VGA_COLOR_BLACK = 0,
   VGA_COLOR_BLUE,
