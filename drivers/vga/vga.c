@@ -1,5 +1,6 @@
 #include <drivers/vga.h>
 #include <io.h>
+#include <string.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -62,7 +63,8 @@ static void update_cursor(void) {
     col = 0;
     if (row < VGA_HEIGHT - 1)
       row++;
-    // TODO: add scroll()
+    else
+      scroll();
   }
   vga_update_cursor(get_cursor());
 }
@@ -110,4 +112,11 @@ void enable_cursor(uint8_t cursor_start, uint8_t cursor_end) {
 
   outb(0x3D4, 0x0B);
   outb(0x3D5, (inb(0x3D5) & 0xE0) | cursor_end);
+}
+
+void scroll(void) {
+  memmove(vga_buffer, vga_buffer + VGA_WIDTH, (VGA_HEIGHT - 1) * VGA_WIDTH * sizeof(uint16_t));
+  for (int i = 0; i < VGA_WIDTH; i++) {
+    vga_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + i] = vga_char(' ', color);
+  }
 }
