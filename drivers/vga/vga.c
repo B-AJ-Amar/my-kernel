@@ -1,6 +1,7 @@
 #include <drivers/vga.h>
 #include <io.h>
 #include <string.h>
+#include <console.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -40,6 +41,24 @@ static inline uint16_t vga_char(char character, uint8_t color);
 static void disable_cursor();
 static void enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 
+
+console_driver_t vga_console = {
+    .putchar = vga_putchar,
+    .write = vga_write,
+    .clear = vga_clear,
+    .set_cursor = vga_set_cursor,
+    .get_cursor = vga_get_cursor,
+    .getchar = NULL
+};
+
+void vga_init(void)
+{
+    row = 0;
+    col = 0;
+    vga_reset_color();
+    vga_clear();
+}
+
 void vga_set_color(uint8_t fg, uint8_t bg) { color = bg << 4 | fg; }
 
 void vga_reset_color(void) { color = VGA_COLOR_BLACK << 4 | VGA_COLOR_WHITE; }
@@ -56,6 +75,8 @@ void vga_clear(void) {
 uint16_t vga_char(char character, uint8_t color) {
   return ((uint16_t)color << 8) | (uint8_t)character;
 }
+
+
 
 static void update_cursor(void) {
   if (col < VGA_WIDTH - 1)
@@ -77,6 +98,8 @@ static void update_cursor(void) {
 0x0e  : high cursor
 
 */
+
+
 void vga_update_cursor(uint16_t pos) {
   outb(0x3D4, 0x0F);
   outb(0x3D5, pos & 0xFF);
@@ -154,3 +177,14 @@ void vga_putchar(char c) {
   }
 } 
 
+void vga_set_cursor(size_t r, size_t c) {
+  if (r >= VGA_HEIGHT || c >= VGA_WIDTH) return;
+  row = r;
+  col = c;
+  vga_update_cursor(get_cursor());
+}
+
+void vga_get_cursor(size_t *r, size_t *c) {
+  if (r) *r = row;
+  if (c) *c = col;
+} 
