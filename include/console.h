@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-extern struct console_driver_t *console;
+extern struct console_driver_t *active_console;
 
 void console_set(struct console_driver_t *driver);
 void console_putchar(char c);
