@@ -1,0 +1,16 @@
+#ifndef STDIO_H
+#define STDIO_h
+
+#include <stddef.h>
+#include <stdarg.h>
+int puts(const char *str);
+int putchar(char c);
+int vsnprintf(char *buf, size_t n, const char *format, va_list ap);
+int vprintf(const char *fmt, va_list args);
+int printf(const char *format, ...);
+int snprintf(char *buf, size_t n, const char *format, ...);
+int sprintf(char *buf, const char *format, ...);
+
+// TODO: add more function likr scanf ....
+#endif
+
