@@ -10,7 +10,7 @@ fi
 SECTORS=$(((FILE_SIZE + 511) / 512))
 
 
-sed -i "s/[0-9]\+[[:space:]]*;[[:space:]]*<KERNEL_SIZE>/$FILE_SIZE ; <KERNEL_SIZE>/" boot/boot.asm
+sed -i "s/[0-9]\+[[:space:]]*;[[:space:]]*<KERNEL_SIZE>/$FILE_SIZE ; <KERNEL_SIZE>/" arch/$(ARCH)/boot.asm
 
-sed -i "s/[0-9]\+[[:space:]]*;[[:space:]]*<SECTORS_LEN>/$SECTORS ; <SECTORS_LEN>/" boot/boot.asm
+sed -i "s/[0-9]\+[[:space:]]*;[[:space:]]*<SECTORS_LEN>/$SECTORS ; <SECTORS_LEN>/" arch/$(ARCH)/boot.asm
 echo $SECTORS

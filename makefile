@@ -55,12 +55,12 @@ build-kernel: $(KERNEL_OBJS)
 
 build-boot:
 	@mkdir -p $(BIN_DIR)
-	./scripts/kernel-size.sh
-	nasm -f bin boot/boot.asm -o $(BOOT_BIN)
+	./scripts/kernel-size.sh $(ARCH)
+	nasm -f bin arch/$(ARCH)/boot.asm -o $(BOOT_BIN)
 
 build-boot-elf:
 	@mkdir -p $(BUILD_DIR)
-	nasm -f elf32 -DELF_BUILD boot/boot.asm -o $(BOOT_ELF)
+	nasm -f elf32 -DELF_BUILD arch/$(ARCH)/boot.asm -o $(BOOT_ELF)
 
 concatinate:
 	cat $(BOOT_BIN) $(KERNEL_BIN) > $(DISK_IMG)
