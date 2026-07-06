@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <console.h>
+#include <kernel/console.h>
 #define MAX_BUFFER_SIZE 2096
 
 static int _utoa(char *buf, size_t buf_size, uint32_t val, int base, int uppercase);

@@ -1,12 +1,13 @@
 .PHONY: all build docker-build build-local build-kernel build-boot build-boot-elf \
         concatinate run debug clean format
 
-CFLAGS := -g -ffreestanding -m32 -Iinclude -nostdlib
+ARCH := x86
+CFLAGS := -g -ffreestanding -m32 -Iinclude -Iarch/$(ARCH)/include -nostdlib
 
 BUILD_DIR := build
 BIN_DIR := bin
 
-KERNEL_SRCS := $(shell find kernel drivers lib -name '*.c')
+KERNEL_SRCS := $(shell find kernel drivers lib arch -name '*.c')
 KERNEL_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(KERNEL_SRCS))
 
 KERNEL_ELF := $(BUILD_DIR)/kernel.elf

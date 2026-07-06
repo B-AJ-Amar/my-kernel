@@ -1,7 +1,7 @@
 #include <drivers/vga.h>
 #include <io.h>
 #include <string.h>
-#include <console.h>
+#include <kernel/console.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25

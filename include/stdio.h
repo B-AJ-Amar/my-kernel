@@ -13,4 +13,3 @@ int sprintf(char *buf, const char *format, ...);
 
 // TODO: add more function likr scanf ....
 #endif
-

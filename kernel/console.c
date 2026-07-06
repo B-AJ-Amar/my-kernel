@@ -1,4 +1,4 @@
-#include <console.h>
+#include <kernel/console.h>
 
 console_driver_t *active_console = NULL;
 

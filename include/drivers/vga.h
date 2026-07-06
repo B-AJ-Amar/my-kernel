@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <console.h>    
+#include <kernel/console.h>    
 
 extern console_driver_t vga_console;
 
