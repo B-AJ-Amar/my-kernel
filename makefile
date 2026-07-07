@@ -2,13 +2,20 @@
         concatinate run debug clean format
 
 ARCH := x86
+
 CFLAGS := -g -ffreestanding -m32 -Iinclude -Iarch/$(ARCH)/include -nostdlib
 
 BUILD_DIR := build
 BIN_DIR := bin
 
-KERNEL_SRCS := $(shell find kernel drivers lib arch -name '*.c')
-KERNEL_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(KERNEL_SRCS))
+
+C_SRCS := $(shell find kernel drivers lib arch -name '*.c')
+ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -name 'boot.asm')
+
+C_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SRCS))
+ASM_OBJS := $(patsubst %.asm,$(BUILD_DIR)/%_asm.o,$(ASM_SRCS))
+
+KERNEL_OBJS := $(C_OBJS) $(ASM_OBJS)
 
 KERNEL_ELF := $(BUILD_DIR)/kernel.elf
 KERNEL_BIN := $(BIN_DIR)/kernel.bin
@@ -36,22 +43,35 @@ docker-build:
 
 build-local: clean build-kernel build-boot build-boot-elf concatinate
 
+
+
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	i686-elf-gcc $(CFLAGS) -c $< -o $@
+
+
+
+$(BUILD_DIR)/%_asm.o: %.asm
+	@mkdir -p $(dir $@)
+	nasm -f elf32 $< -o $@
+
+
 
 build-kernel: $(KERNEL_OBJS)
 	@mkdir -p $(BUILD_DIR) $(BIN_DIR)
 
 	i686-elf-ld \
+		-m elf_i386 \
 		-T kernel/linker.ld \
-		$(KERNEL_OBJS) \
-		-o $(KERNEL_ELF)
+		-o $(KERNEL_ELF) \
+		$(KERNEL_OBJS)
 
 	i686-elf-objcopy \
 		-O binary \
 		$(KERNEL_ELF) \
 		$(KERNEL_BIN)
+
+
 
 build-boot:
 	@mkdir -p $(BIN_DIR)
@@ -62,8 +82,11 @@ build-boot-elf:
 	@mkdir -p $(BUILD_DIR)
 	nasm -f elf32 -DELF_BUILD arch/$(ARCH)/boot.asm -o $(BOOT_ELF)
 
+
+
 concatinate:
 	cat $(BOOT_BIN) $(KERNEL_BIN) > $(DISK_IMG)
+
 
 run:
 	qemu-system-x86_64 \
@@ -73,12 +96,11 @@ debug:
 	qemu-system-x86_64 \
 		-drive file=$(DISK_IMG),format=raw \
 		-S -gdb tcp::1234
-#	qemu-system-x86_64 \
-#		-drive file=$(DISK_IMG),format=raw \
-#		-gdb stdio -S
 
 gdb:
 	pwndbg -x debug.gdb
+
+
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
 	mkdir -p $(BUILD_DIR) $(BIN_DIR)

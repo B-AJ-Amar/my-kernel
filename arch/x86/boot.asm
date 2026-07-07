@@ -55,7 +55,7 @@ load_kernel:
     mov dl, [boot_drive]
     mov ah, 0x02;write mode
     ;! dont remove token i will use it in the build time
-    mov al, 17 ; <SECTORS_LEN>  number of sectors (i will upt this in build time)
+    mov al, 25 ; <SECTORS_LEN>  number of sectors (i will upt this in build time)
     int 0x13
 
     jc disk_error
@@ -132,7 +132,7 @@ start_protected_mode:
     mov esi, KERNEL_ADDR_RM 
     mov edi, KERNEL_ADDR_PM    
     ;! dont remove token i will use it in the build time
-    mov ecx, 8220 ; <KERNEL_SIZE> TODO: count dwords to copy 
+    mov ecx, 12316 ; <KERNEL_SIZE> TODO: count dwords to copy 
     rep movsb 
 kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM
