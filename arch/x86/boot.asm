@@ -132,7 +132,7 @@ start_protected_mode:
     mov esi, KERNEL_ADDR_RM 
     mov edi, KERNEL_ADDR_PM    
     ;! dont remove token i will use it in the build time
-    mov ecx, 12316 ; <KERNEL_SIZE> TODO: count dwords to copy 
+    mov ecx, 12448 ; <KERNEL_SIZE> TODO: count dwords to copy 
     rep movsb 
 kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM

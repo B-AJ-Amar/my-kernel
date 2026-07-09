@@ -220,7 +220,7 @@ isr31:
     push 0x0
     push 0x1F
     jmp isr_common
-
+    
 isr_common:
     pushad ;push : EAX, ECX, EDX, EBX,ESP, EBP, ESI, EDI
     cld
@@ -228,8 +228,10 @@ isr_common:
     push esp         ; ? push the vlue of the stackpointer ( pointer to registers :) )
     call isr_handler
     add esp, 4       ; ? rm esp
-
+    
     popad                    
-
+    
     add esp, 8       ; ? rm int_no and err_code
+    
+
     iretd             

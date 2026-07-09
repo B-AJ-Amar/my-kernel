@@ -3,11 +3,16 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <kernel/console.h>
+#include <io.h>
 #define MAX_BUFFER_SIZE 2096
 
 static int _utoa(char *buf, size_t buf_size, uint32_t val, int base, int uppercase);
 
 // TODO: add colors support e.g `\033[0;31m`
+
+
+
+
 
 int puts(const char *str) {
     if (!str) return -1;
@@ -45,6 +50,14 @@ int printf(const char *fmt, ...) {
     int len = vprintf(fmt, args);
     va_end(args);
     return len;
+}
+
+void panic(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    int len = vprintf(fmt, args);
+    va_end(args);
+    hlt();
 }
 
 

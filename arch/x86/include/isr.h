@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct registers {
+struct isr_registers {
     // ? pusha
     uint32_t edi;
     uint32_t esi;
@@ -24,7 +24,7 @@ struct registers {
     uint32_t eflags;
 };
 
-extern void isr_handler(struct registers *regs);
+extern void isr_handler(struct isr_registers *regs);
 extern void isr0(void);
 extern void isr1(void);
 extern void isr2(void);
