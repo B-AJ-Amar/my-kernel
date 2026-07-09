@@ -2,10 +2,7 @@
 
 console_driver_t *active_console = NULL;
 
-void console_set(console_driver_t *driver) {
-  active_console = driver;
-}
-
+void console_set(console_driver_t *driver) { active_console = driver; }
 
 void console_putchar(char c) {
   if (active_console && active_console->putchar) {

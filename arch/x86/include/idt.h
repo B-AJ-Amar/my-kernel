@@ -4,19 +4,19 @@
 #include <stdint.h>
 
 #define IDT_GATE_INTERRUPT 0x8E
-#define IDT_GATE_TRAP      0x8F
+#define IDT_GATE_TRAP 0x8F
 
 struct interrupt_descriptor {
-    uint16_t offset_low;
-    uint16_t selector;
-    uint8_t  zero;
-    uint8_t  flags;
-    uint16_t offset_high;
+  uint16_t offset_low;
+  uint16_t selector;
+  uint8_t zero;
+  uint8_t flags;
+  uint16_t offset_high;
 } __attribute__((packed));
 
 struct idt_ptr {
-    uint16_t limit;
-    uint32_t base;
+  uint16_t limit;
+  uint32_t base;
 } __attribute__((packed));
 
 extern struct interrupt_descriptor idt[256];

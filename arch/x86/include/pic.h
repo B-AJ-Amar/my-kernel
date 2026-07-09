@@ -7,14 +7,13 @@
 #define PIC1 0x20
 #define PIC2 0xA0
 
-#define PIC1_COMMAND	PIC1
-#define PIC1_DATA	(PIC1+1)
-#define PIC2_COMMAND	PIC2
-#define PIC2_DATA	(PIC2+1)
+#define PIC1_COMMAND PIC1
+#define PIC1_DATA (PIC1 + 1)
+#define PIC2_COMMAND PIC2
+#define PIC2_DATA (PIC2 + 1)
 
 #define PIC1_OFFSET 0x20
 #define PIC2_OFFSET 0x28
-
 
 /*
 d4 init bit = 1
@@ -30,19 +29,18 @@ d0 need ICW4 ?
 /*
 d3: Special Fully Nested Mode ? (used in case of multiple slaves)
 d2: buffered mode (does it conneced to an external buffer ?)
-d1: audo End of interupt ? 
+d1: audo End of interupt ?
 d0: mode  (protocol)
     0 = 8086/88  mode
     1 = MCS-80/85 mode
 
-*/                         
+*/
 #define IWC4_DATA 0x01
 
 #define PIC_ALLOW_ALL 0x00
 #define PIC_MASK_ALL 0xFF
 
-
-#define PIC_EOI		0x20
+#define PIC_EOI 0x20
 
 extern void pic_send_eoi(uint8_t irq);
 

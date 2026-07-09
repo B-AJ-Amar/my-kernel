@@ -5,5 +5,4 @@
 
 void irq_handler(struct isr_registers *regs);
 
-
 #endif

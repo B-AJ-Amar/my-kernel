@@ -14,12 +14,12 @@ void console_set_cursor(size_t row, size_t col);
 void console_get_cursor(size_t *row, size_t *col);
 
 typedef struct console_driver_t {
-    void (*putchar)(char);
-    void (*write)(const char *);
-    void (*clear)(void);
-    void (*set_cursor)(size_t, size_t);
-    void (*get_cursor)(size_t *row, size_t *col);
-    int  (*getchar)(void);
+  void (*putchar)(char);
+  void (*write)(const char *);
+  void (*clear)(void);
+  void (*set_cursor)(size_t, size_t);
+  void (*get_cursor)(size_t *row, size_t *col);
+  int (*getchar)(void);
 } console_driver_t;
 
 #endif
