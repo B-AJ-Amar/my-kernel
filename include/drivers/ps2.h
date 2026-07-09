@@ -36,7 +36,6 @@
 #define PS2_CFG_PORT1_TRANSLATION (1 << 6)
 // must be 0
 
-
 void ps2_init(void);
 void ps2_write_data(uint8_t data);
 void ps2_write_command(uint8_t cmd);
