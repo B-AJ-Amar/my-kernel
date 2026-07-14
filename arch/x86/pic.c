@@ -69,6 +69,6 @@ void pic_init(void) {
   pic_send_data(PIC1, IWC4_DATA);
   pic_send_data(PIC2, IWC4_DATA);
 
-  pic_write_mask(PIC1, PIC_ALLOW_ALL);
-  pic_write_mask(PIC2, PIC_ALLOW_ALL);
+  pic_write_mask(PIC1, PIC_ALLOW_KEYBOARD);
+  // pic_write_mask(PIC2, PIC_ALLOW_ALL  );
 }

@@ -39,6 +39,7 @@ d0: mode  (protocol)
 
 #define PIC_ALLOW_ALL 0x00
 #define PIC_MASK_ALL 0xFF
+#define PIC_ALLOW_KEYBOARD 0xFD
 
 #define PIC_EOI 0x20
 

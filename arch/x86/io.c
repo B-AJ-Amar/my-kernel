@@ -22,6 +22,5 @@ void lidt(void *idt_ptr) {
                    : "r"(idt_ptr));
 }
 
-void enable_interrupts() { __asm__ volatile("sti"); }
-
-void disable_interrupts() { __asm__ volatile("cli"); }
+void enable_interrupts(void) { __asm__ volatile("sti"); }
+void disable_interrupts(void) { __asm__ volatile("cli"); }

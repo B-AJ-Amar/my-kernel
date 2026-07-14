@@ -1,9 +1,6 @@
-
-#include <io.h>
+#include <interupt.h>
 #include <isr.h>
 #include <stdio.h>
-
-// https://wiki.osdev.org/Exceptions
 
 const char *exception_names[32] = {"Divide Error",
                                    "Debug",
@@ -38,7 +35,7 @@ const char *exception_names[32] = {"Divide Error",
                                    "Security Exception",
                                    "Reserved"};
 
-void isr_handler(struct isr_registers *regs) {
+void isr_handler(interupt_registers_t *regs) {
   panic("Exception %u:%u : %s\n", regs->int_no, regs->err_code,
         exception_names[regs->int_no]);
 }

@@ -1,30 +1,13 @@
 #ifndef ISR_H
 #define ISR_H
 
+#include <interupt.h>
 #include <stdint.h>
 
-struct isr_registers {
-  // ? pusha
-  uint32_t edi;
-  uint32_t esi;
-  uint32_t ebp;
-  uint32_t esp;
-  uint32_t ebx;
-  uint32_t edx;
-  uint32_t ecx;
-  uint32_t eax;
+extern const char *exception_names[32];
 
-  // ? pushed by me (in irs.asm)
-  uint32_t int_no;
-  uint32_t err_code;
+void isr_handler(interupt_registers_t *regs);
 
-  // ? pushed by the cpu automatically
-  uint32_t eip;
-  uint32_t cs;
-  uint32_t eflags;
-};
-
-extern void isr_handler(struct isr_registers *regs);
 extern void isr0(void);
 extern void isr1(void);
 extern void isr2(void);
@@ -57,5 +40,21 @@ extern void isr28(void);
 extern void isr29(void);
 extern void isr30(void);
 extern void isr31(void);
+extern void irq0(void);
+extern void irq1(void);
+extern void irq2(void);
+extern void irq3(void);
+extern void irq4(void);
+extern void irq5(void);
+extern void irq6(void);
+extern void irq7(void);
+extern void irq8(void);
+extern void irq9(void);
+extern void irq10(void);
+extern void irq11(void);
+extern void irq12(void);
+extern void irq13(void);
+extern void irq14(void);
+extern void irq15(void);
 
 #endif
