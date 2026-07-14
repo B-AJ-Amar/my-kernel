@@ -1,0 +1,85 @@
+#ifndef DRIVER_KEYBOARD_LAYOUT_H
+#define DRIVER_KEYBOARD_LAYOUT_H
+#define KB_LAYOUT_SIZE 256
+
+typedef struct {
+  char *name;
+  char keys_upper[KB_LAYOUT_SIZE];
+  char keys_lower[KB_LAYOUT_SIZE];
+} keyboard_layout_t;
+
+extern keyboard_layout_t layout_us;
+extern keyboard_layout_t layout_fr;
+
+typedef enum {
+  KEY_NONE = 0,
+  ESC_KEY,
+  NUM_1,
+  NUM_2_KEY,
+  NUM_3_KEY,
+  NUM_4_KEY,
+  NUM_5_KEY,
+  NUM_6,
+  NUM_7_KEY,
+  NUM_8_KEY,
+  NUM_9_KEY,
+  NUM_0_KEY,
+  MINUS_KEY,
+  EQUALS_KEY,
+  BACKSPACE_KEY,
+  TAB_KEY,
+  Q_KEY,
+  W_KEY,
+  E_KEY,
+  R_KEY,
+  T_KEY,
+  Y_KEY,
+  U_KEY,
+  I_KEY,
+  O_KEY,
+  P_KEY,
+  LEFT_BRACKET_KEY,
+  RIGHT_BRACKET_KEY,
+  ENTER_KEY,
+  LEFT_CTRL_KEY,
+  A_KEY,
+  S_KEY,
+  D_KEY,
+  F_KEY,
+  G_KEY,
+  H_KEY,
+  J_KEY,
+  K_KEY,
+  L_KEY,
+  SEMICOLON_KEY,
+  SINGLE_QUOTE_KEY,
+  BACKTICK_KEY,
+  LEFT_SHIFT_KEY,
+  BACKSLASH_KEY,
+  Z_KEY,
+  X_KEY,
+  C_KEY,
+  V_KEY,
+  B_KEY,
+  N_KEY,
+  M_KEY,
+  COMMA_KEY,
+  DOT_KEY,
+  SLASH_KEY,
+  RIGHT_SHIFT_KEY,
+  KEYPAD_KEY,
+  LEFT_ALT_KEY,
+  SPACE_KEY,
+  CAPS_LOCK_KEY,
+  F1_KEY,
+  F2_KEY,
+  F3_KEY,
+  F4_KEY,
+  F5_KEY,
+  F6_KEY,
+  F7_KEY,
+  F8_KEY,
+  F9_KEY,
+  F10_KEY,
+} keyboard_key_t;
+#endif

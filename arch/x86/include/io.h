@@ -12,7 +12,7 @@ uint8_t inb(uint16_t port);
 
 void hlt();
 void lidt(void *idt_ptr);
-void enable_interrupts();
-void disable_interrupts();
+void enable_interrupts(void);
+void disable_interrupts(void);
 
 #endif

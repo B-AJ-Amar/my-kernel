@@ -1,9 +1,15 @@
 
 
+#include <drivers/ps2/controller.h>
 #include <io.h>
-#include <ps2.h>
 #include <stdbool.h>
+#include <stdio.h>
+
+static void ps2_flush_buffer(void);
+
 uint8_t ps2_read_status(void) { return inb(PS2_STATUS_PORT); }
+
+uint8_t ps2_read_data(void) { return inb(PS2_DATA_PORT); }
 
 // todo: add a timout after timer driver
 void ps2_wait_for_input(void) {
@@ -38,7 +44,7 @@ void ps2_init(void) {
   ps2_write_command(PS2_CMD_DISABLE_PORT1);
   ps2_write_command(PS2_CMD_DISABLE_PORT2);
 
-  flush_buffer();
+  ps2_flush_buffer();
 
   ps2_write_command(PS2_CMD_READ_CONFIG);
   uint8_t config = ps2_read_data();
@@ -101,7 +107,7 @@ void ps2_init(void) {
   // reset will be donn by the drivers (keyboard and mouse)
 }
 
-static void flush_buffer(void) {
+void ps2_flush_buffer(void) {
   while (ps2_read_status() & PS2_SR_BUFFER_FULL)
     (void)ps2_read_data();
 }

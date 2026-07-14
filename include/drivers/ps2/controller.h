@@ -1,5 +1,5 @@
-#ifndef PS2_H
-#define PS2_H
+#ifndef PS2_CONTROLLER__H
+#define PS2_CONTROLLER__H
 // https://wiki.osdev.org/I8042_PS/2_Controller
 #include <stdint.h>
 
@@ -41,7 +41,6 @@ void ps2_write_data(uint8_t data);
 void ps2_write_command(uint8_t cmd);
 uint8_t ps2_read_data(void);
 uint8_t ps2_read_status(void);
-void ps2_wait_for_input(void);
-void ps2_wait_for_output(void);
-void flush_buffer(void);
+// void ps2_wait_for_input(void);
+// void ps2_wait_for_output(void);
 #endif

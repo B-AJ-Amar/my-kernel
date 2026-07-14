@@ -3,8 +3,10 @@ ENTRY(kernel)
 
 SECTIONS {
     . = 0x0100000;
+
     .text ALIGN(4096) :
     {
+        *(.start)
         *(.text)
     }
 
