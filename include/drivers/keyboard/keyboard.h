@@ -11,22 +11,21 @@ typedef struct {
   bool caps_lock;
 } keyboard_state_t;
 
+typedef enum {
+  KB_BACKEND_PS2,
+  KB_BACKEND_USB,
+} kb_backend_t;
 typedef struct keyboard_driver_t {
   bool (*init)(void);
   void (*interupt_handler)(void);
   void (*set_layout)(void);
   void (*set_state)(keyboard_state_t state);
-  char (*putchar)(char);
 } keyboard_driver_t;
 
-void __init_keyboard(void);
+void init_keyboard(kb_backend_t backend, const keyboard_layout_t *layout);
 bool is_printable_key(uint8_t scancode);
-const keyboard_layout_t *keyboard_get_layout(void);
+keyboard_layout_t *keyboard_get_layout(void);
 void keyboard_set_layout(const keyboard_layout_t *layout);
-
-typedef enum {
-  KB_BACKEND_PS2,
-  // KB_BACKEND_USB,
-} kb_backend_t;
+keyboard_driver_t *keyboard_get_driver(void);
 
 #endif

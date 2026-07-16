@@ -1,16 +1,17 @@
 #include <drivers/keyboard/layout.h>
+#include <drivers/keyboard/keymap.h>
 
 keyboard_layout_t layout_us = {
     .name = "US",
     .keys_lower =
         {
 
-            [NUM_1] = '1',
+            [NUM_1_KEY] = '1',
             [NUM_2_KEY] = '2',
             [NUM_3_KEY] = '3',
             [NUM_4_KEY] = '4',
             [NUM_5_KEY] = '5',
-            [NUM_6] = '6',
+            [NUM_6_KEY] = '6',
             [NUM_7_KEY] = '7',
             [NUM_8_KEY] = '8',
             [NUM_9_KEY] = '9',
@@ -58,12 +59,12 @@ keyboard_layout_t layout_us = {
         },
     .keys_upper =
         {
-            [NUM_1] = '!',
+            [NUM_1_KEY] = '!',
             [NUM_2_KEY] = '@',
             [NUM_3_KEY] = '#',
             [NUM_4_KEY] = '$',
             [NUM_5_KEY] = '%',
-            [NUM_6] = '^',
+            [NUM_6_KEY] = '^',
             [NUM_7_KEY] = '&',
             [NUM_8_KEY] = '*',
             [NUM_9_KEY] = '(',

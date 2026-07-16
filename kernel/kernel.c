@@ -4,6 +4,8 @@
 #include <io.h>
 #include <pic.h>
 #include <stdio.h>
+#include <drivers/keyboard/keyboard.h>
+#include <drivers/keyboard/layout.h>
 __attribute__((section(".start"))) void kernel(void) {
 
   disable_interrupts();
@@ -12,18 +14,15 @@ __attribute__((section(".start"))) void kernel(void) {
   
   vga_init();
   console_set(&vga_console);
+
   ps2_init();
-  printf("\tHell  \bo %s the \nkernel\n", "from");
+  init_keyboard(KB_BACKEND_PS2, &layout_us);
+  
   enable_interrupts();
 
-  
-  // outb(0x43, 0x36);
-
-  // uint16_t divisor = 1193182 / 100;
+  printf("\tHell  \bo %s the \nkernel\n", "from");
 
 
-  // outb(0x40, divisor & 0xFF);
-  // outb(0x40, divisor >> 8);
 
   // int x = 10 / 0;
 

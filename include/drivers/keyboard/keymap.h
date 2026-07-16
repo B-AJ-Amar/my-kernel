@@ -1,0 +1,146 @@
+#ifndef DRIVER_KEYBOARD_KYMAP_H
+#define DRIVER_KEYBOARD_KYMAP_H
+#include <stdint.h>
+
+typedef enum {
+    KB_PROTOCOL_SET1,
+    KB_PROTOCOL_SET2,
+    KB_PROTOCOL_SET3,
+} kb_protocol_t;
+
+
+typedef enum {
+    KEY_NONE = 0,
+
+    /* Row 0 */
+    ESC_KEY,
+    NUM_1_KEY,
+    NUM_2_KEY,
+    NUM_3_KEY,
+    NUM_4_KEY,
+    NUM_5_KEY,
+    NUM_6_KEY,
+    NUM_7_KEY,
+    NUM_8_KEY,
+    NUM_9_KEY,
+    NUM_0_KEY,
+    MINUS_KEY,
+    EQUALS_KEY,
+    BACKSPACE_KEY,
+    TAB_KEY,
+
+    /* Row 1 */
+    Q_KEY,
+    W_KEY,
+    E_KEY,
+    R_KEY,
+    T_KEY,
+    Y_KEY,
+    U_KEY,
+    I_KEY,
+    O_KEY,
+    P_KEY,
+    LEFT_BRACKET_KEY,
+    RIGHT_BRACKET_KEY,
+    ENTER_KEY,
+    LEFT_CTRL_KEY,
+
+    /* Row 2 */
+    A_KEY,
+    S_KEY,
+    D_KEY,
+    F_KEY,
+    G_KEY,
+    H_KEY,
+    J_KEY,
+    K_KEY,
+    L_KEY,
+    SEMICOLON_KEY,
+    SINGLE_QUOTE_KEY,
+    BACKTICK_KEY,
+    LEFT_SHIFT_KEY,
+    BACKSLASH_KEY,
+
+    /* Row 3 */
+    Z_KEY,
+    X_KEY,
+    C_KEY,
+    V_KEY,
+    B_KEY,
+    N_KEY,
+    M_KEY,
+    COMMA_KEY,
+    DOT_KEY,
+    SLASH_KEY,
+    RIGHT_SHIFT_KEY,
+    KEYPAD_MULTIPLY_KEY,
+    LEFT_ALT_KEY,
+    SPACE_KEY,
+    CAPS_LOCK_KEY,
+
+    /* Function keys */
+    F1_KEY,
+    F2_KEY,
+    F3_KEY,
+    F4_KEY,
+    F5_KEY,
+    F6_KEY,
+    F7_KEY,
+    F8_KEY,
+    F9_KEY,
+    F10_KEY,
+
+    /* Lock & keypad */
+    NUM_LOCK_KEY,
+    SCROLL_LOCK_KEY,
+
+    KEYPAD_7_KEY,
+    KEYPAD_8_KEY,
+    KEYPAD_9_KEY,
+    KEYPAD_MINUS_KEY,
+
+    KEYPAD_4_KEY,
+    KEYPAD_5_KEY,
+    KEYPAD_6_KEY,
+    KEYPAD_PLUS_KEY,
+
+    KEYPAD_1_KEY,
+    KEYPAD_2_KEY,
+    KEYPAD_3_KEY,
+    KEYPAD_0_KEY,
+    KEYPAD_DOT_KEY,
+
+    /* Extended / remaining */
+    F11_KEY,
+    F12_KEY,
+
+    RIGHT_CTRL_KEY,
+    RIGHT_ALT_KEY,
+
+    KEYPAD_ENTER_KEY,
+    KEYPAD_DIVIDE_KEY,
+
+    INSERT_KEY,
+    DELETE_KEY,
+    HOME_KEY,
+    END_KEY,
+    PAGE_UP_KEY,
+    PAGE_DOWN_KEY,
+
+    UP_ARROW_KEY,
+    DOWN_ARROW_KEY,
+    LEFT_ARROW_KEY,
+    RIGHT_ARROW_KEY,
+
+    PRINT_SCREEN_KEY,
+    PAUSE_KEY,
+
+    LEFT_GUI_KEY,
+    RIGHT_GUI_KEY,
+    MENU_KEY,
+
+} keyboard_key_t;
+
+keyboard_key_t scan_set2_decode(uint8_t scancode);
+
+#endif

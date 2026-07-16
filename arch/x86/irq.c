@@ -1,11 +1,16 @@
-#include "irq.h"
-#include "pic.h"
-
+#include <irq.h>
+#include <pic.h>
+#include <stdio.h>
+#include <io.h>
+#include <drivers/keyboard/keyboard.h>
 // TODO: keyboard+ time drivers
+static void __irq_keyboard_handler__();
+
+
 void irq_handler(interupt_registers_t *regs) {
   switch (regs->int_no) {
   case 33:
-    // keyboard_handler();
+    __irq_keyboard_handler__();
     break;
 
   case 32:
@@ -16,4 +21,9 @@ void irq_handler(interupt_registers_t *regs) {
   pic_send_eoi(regs->int_no - PIC1_OFFSET); // end of interupt
 }
 
-void keyboard_handler() {}
+static void __irq_keyboard_handler__() {
+  keyboard_driver_t *driver = keyboard_get_driver();
+  if (driver && driver->interupt_handler) {
+    driver->interupt_handler();
+  }
+}

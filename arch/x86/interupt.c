@@ -1,6 +1,6 @@
 
-#include "irq.h"
-#include "isr.h"
+#include <irq.h>
+#include <isr.h>
 #include <interupt.h>
 #include <io.h>
 #include <stdio.h>
@@ -8,8 +8,7 @@
 // https://wiki.osdev.org/Exceptions
 
 void interupt_handler(interupt_registers_t *regs) {
-  printf("# : %u\n", regs->int_no);
-  if (regs->int_no < 32)
+  if (regs->int_no < 32) 
     isr_handler(regs);
   else if (regs->int_no >= 32 && regs->int_no < 48)
     irq_handler(regs);
