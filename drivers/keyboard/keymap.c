@@ -1,6 +1,5 @@
 #include <drivers/keyboard/keymap.h>
 
-
 // TODO: add protocol interface and add support for multiple protocols
 
 static const keyboard_key_t set2_keymap[256] = {
@@ -104,7 +103,6 @@ static const keyboard_key_t set2_keymap[256] = {
     [0x83] = F7_KEY,
 };
 
-
-keyboard_key_t scan_set2_decode(uint8_t scancode){
-    return set2_keymap[scancode];
+keyboard_key_t scan_set2_decode(uint8_t scancode) {
+  return set2_keymap[scancode];
 }

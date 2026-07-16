@@ -1,11 +1,10 @@
+#include <drivers/keyboard/keyboard.h>
+#include <io.h>
 #include <irq.h>
 #include <pic.h>
 #include <stdio.h>
-#include <io.h>
-#include <drivers/keyboard/keyboard.h>
 // TODO: keyboard+ time drivers
 static void __irq_keyboard_handler__();
-
 
 void irq_handler(interupt_registers_t *regs) {
   switch (regs->int_no) {

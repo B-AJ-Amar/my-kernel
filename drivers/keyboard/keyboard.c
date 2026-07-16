@@ -5,8 +5,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
-// phisical key -> protocol (e.g scan_set2) -> logical key (e.g KEY_Q) -> layout (e.g 'a' | 'A' | 'q' | 'Q')
+// phisical key -> protocol (e.g scan_set2) -> logical key (e.g KEY_Q) -> layout
+// (e.g 'a' | 'A' | 'q' | 'Q')
 
 static keyboard_layout_t *current_layout;
 static keyboard_state_t current_state = {0};

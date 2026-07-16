@@ -1,5 +1,5 @@
-#include <drivers/keyboard/layout.h>
 #include <drivers/keyboard/keymap.h>
+#include <drivers/keyboard/layout.h>
 
 keyboard_layout_t layout_us = {
     .name = "US",

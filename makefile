@@ -31,6 +31,8 @@ format:
 	find . -regex '.*\.\(c\|h\|cpp\|hpp\|cc\|cxx\)' \
 		-exec clang-format -style=LLVM -i {} \;
 
+fmt: format	
+
 build: docker-build
 
 docker-build:
@@ -96,6 +98,8 @@ debug:
 	qemu-system-x86_64 \
 		-drive file=$(DISK_IMG),format=raw \
 		-S -gdb tcp::1234
+		
+dbg: debug
 
 gdb:
 	pwndbg -x debug.gdb
