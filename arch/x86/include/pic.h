@@ -25,7 +25,7 @@ d1 cascade = 1 | single = 0
 d0 need ICW4 ?
 
 */
-#define PIC_ICW1_INIT 0b1001
+#define PIC_ICW1_INIT 0x11
 /*
 d3: Special Fully Nested Mode ? (used in case of multiple slaves)
 d2: buffered mode (does it conneced to an external buffer ?)
