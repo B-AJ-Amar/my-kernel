@@ -142,17 +142,22 @@ void vga_putchar(char c) {
       row++;
     else
       scroll();
+    vga_update_cursor(get_cursor());
     break;
   case '\r':
     col = 0;
+    vga_update_cursor(get_cursor());
     break;
   case '\b':
     if (col > 0)
-      col -= 2;
+      col -= 1;
     else {
       col = VGA_WIDTH - 1;
       row--;
     }
+    vga_buffer[get_cursor()] = vga_char(' ', color);
+    vga_update_cursor(get_cursor());
+    break;
   case '\t':
     col = ((col / TAB_SIZE) + 1) * TAB_SIZE;
     if (col >= VGA_WIDTH) {
@@ -162,6 +167,7 @@ void vga_putchar(char c) {
       else
         scroll();
     }
+    vga_update_cursor(get_cursor());
     break;
   default:
     vga_buffer[get_cursor()] = vga_char(c, color);
