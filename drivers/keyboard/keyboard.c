@@ -56,22 +56,22 @@ bool is_printable_key(uint8_t key_code) {
 
 keyboard_driver_t *keyboard_get_driver(void) { return current_driver; }
 
-bool keyboard_even_is_empty(keyboard_event_queue *queue) {
-  if (queue->head == queue->tail)
+bool keyboard_event_is_empty(void) {
+  if (event_queue.head == event_queue.tail)
     return true;
 
   return false;
 }
 
-bool keyboard_even_is_full(keyboard_event_queue *queue) {
-  if ((queue->tail + 1) % queue->capacity == queue->head)
+bool keyboard_event_is_full(void) {
+  if ((event_queue.tail + 1) % event_queue.capacity == event_queue.head)
     return true;
 
   return false;
 }
 
 bool keyboard_push_event(keyboard_event_t event) {
-  if (keyboard_even_is_full(&event_queue)) {
+  if (keyboard_event_is_full()) {
     return false;
   }
   event_queue.buffer[event_queue.tail] = event;
@@ -79,17 +79,17 @@ bool keyboard_push_event(keyboard_event_t event) {
   return true;
 }
 
-bool keyboard_pop_event(keyboard_event_t *event) {
-  if (keyboard_even_is_empty(&event_queue)) {
-    return false;
+keyboard_event_t *keyboard_pop_event(void) {
+  if (keyboard_event_is_empty()) {
+    return NULL;
   }
-  *event = event_queue.buffer[event_queue.head];
+  keyboard_event_t *event = &event_queue.buffer[event_queue.head];
   event_queue.head = (event_queue.head + 1) % event_queue.capacity;
-  return true;
+  return event;
 }
 
-keyboard_event_t *keyboard_peek_event(keyboard_event_t *event) {
-  if (keyboard_even_is_empty(&event_queue)) {
+keyboard_event_t *keyboard_peek_event(void) {
+  if (keyboard_event_is_empty()) {
     return NULL;
   }
   return &event_queue.buffer[event_queue.head];

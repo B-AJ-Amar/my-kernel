@@ -54,11 +54,11 @@ keyboard_driver_t *keyboard_get_driver(void);
 // common function should handle the event and push it
 void keyboard_handle_event(uint8_t key_code, keyboard_event_type_t type);
 
-bool keyboard_even_is_empty(keyboard_event_queue *queue);
-bool keyboard_even_is_full(keyboard_event_queue *queue);
+bool keyboard_event_is_empty(void);
+bool keyboard_event_is_full(void);
 bool keyboard_push_event(keyboard_event_t event);
-bool keyboard_pop_event(keyboard_event_t *event);
-keyboard_event_t *keyboard_peek_event(keyboard_event_t *event);
+keyboard_event_t *keyboard_pop_event(void);
+keyboard_event_t *keyboard_peek_event(void);
 
 bool keyboard_shift(void);
 bool keyboard_ctrl(void);

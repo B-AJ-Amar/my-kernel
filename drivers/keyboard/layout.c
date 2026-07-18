@@ -56,6 +56,7 @@ keyboard_layout_t layout_us = {
             [COMMA_KEY] = ',',
             [DOT_KEY] = '.',
             [SLASH_KEY] = '/',
+            [SPACE_KEY] = ' ',
         },
     .keys_upper =
         {

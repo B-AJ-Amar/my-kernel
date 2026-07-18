@@ -22,10 +22,15 @@ __attribute__((section(".start"))) void kernel(void) {
 
   printf("\tHell  \bo %s the \nkernel\n", "from");
 
-  // int x = 10 / 0;
+  keyboard_event_t *event;
 
-  // __asm__ volatile("ud2");
-
+  // todo: scredular
   while (1) {
+    while (keyboard_peek_event()) {
+      event = keyboard_pop_event();
+      if (event->type == KEY_PRESS) {
+        printf("%c", event->character);
+      }
+    }
   }
 }
