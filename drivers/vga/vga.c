@@ -51,6 +51,7 @@ console_driver_t vga_console = {.putchar = vga_putchar,
 void vga_init(void) {
   row = 0;
   col = 0;
+  enable_cursor(0, 15);
   vga_reset_color();
   vga_clear();
 }
