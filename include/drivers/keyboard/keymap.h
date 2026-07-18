@@ -140,6 +140,6 @@ typedef enum {
 
 } keyboard_key_t;
 
-keyboard_key_t scan_set2_decode(uint8_t scancode);
+keyboard_key_t keyboard_ps2_set2_decode(uint8_t scancode);
 
 #endif

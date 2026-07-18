@@ -3,6 +3,9 @@
 #include <drivers/keyboard/keyboard.h>
 #include <stdbool.h>
 
+#define KB_SET2_EXTENDED 0xE0
+#define KB_SET2_RELEASED 0xF0
+
 #define KB_CMD_IDENTIFY 0xF2
 #define KB_CMD_ENABLE_SCAN 0xF4
 #define KB_CMD_RESEND 0xFE

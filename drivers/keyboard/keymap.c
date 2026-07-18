@@ -2,7 +2,13 @@
 
 // TODO: add protocol interface and add support for multiple protocols
 
-static const keyboard_key_t set2_keymap[256] = {
+static const keyboard_key_t ps2_set2_keymap[256];
+
+keyboard_key_t keyboard_ps2_set2_decode(uint8_t scancode) {
+  return ps2_set2_keymap[scancode];
+}
+
+static const keyboard_key_t ps2_set2_keymap[256] = {
     [0x01] = F9_KEY,
     [0x03] = F5_KEY,
     [0x04] = F3_KEY,
@@ -101,8 +107,5 @@ static const keyboard_key_t set2_keymap[256] = {
     [0x7D] = KEYPAD_9_KEY,
 
     [0x83] = F7_KEY,
-};
 
-keyboard_key_t scan_set2_decode(uint8_t scancode) {
-  return set2_keymap[scancode];
-}
+};
