@@ -1,6 +1,5 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
-
 #include <stddef.h>
 #include <stdint.h>
 
@@ -12,6 +11,7 @@ void console_write(const char *str);
 void console_clear(void);
 void console_set_cursor(size_t row, size_t col);
 void console_get_cursor(size_t *row, size_t *col);
+void console_set_color(int fg, int bg);
 
 typedef struct console_driver_t {
   void (*putchar)(char);
@@ -19,6 +19,7 @@ typedef struct console_driver_t {
   void (*clear)(void);
   void (*set_cursor)(size_t, size_t);
   void (*get_cursor)(size_t *row, size_t *col);
+  void (*set_color)(int fg, int bg);
   int (*getchar)(void);
 } console_driver_t;
 

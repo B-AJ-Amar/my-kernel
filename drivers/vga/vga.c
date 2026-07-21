@@ -46,6 +46,7 @@ console_driver_t vga_console = {.putchar = vga_putchar,
                                 .clear = vga_clear,
                                 .set_cursor = vga_set_cursor,
                                 .get_cursor = vga_get_cursor,
+                                .set_color = vga_set_color,
                                 .getchar = NULL};
 
 void vga_init(void) {
@@ -56,7 +57,7 @@ void vga_init(void) {
   vga_clear();
 }
 
-void vga_set_color(uint8_t fg, uint8_t bg) { color = bg << 4 | fg; }
+void vga_set_color(int fg, int bg) { color = bg << 4 | fg; }
 
 void vga_reset_color(void) { color = VGA_COLOR_BLACK << 4 | VGA_COLOR_WHITE; }
 
