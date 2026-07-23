@@ -47,6 +47,7 @@ console_driver_t vga_console = {.putchar = vga_putchar,
                                 .set_cursor = vga_set_cursor,
                                 .get_cursor = vga_get_cursor,
                                 .set_color = vga_set_color,
+                                .move_cursor = vga_move_cursor,
                                 .getchar = NULL};
 
 void vga_init(void) {
@@ -192,4 +193,16 @@ void vga_get_cursor(size_t *r, size_t *c) {
     *r = row;
   if (c)
     *c = col;
+}
+
+void vga_move_cursor(int offset) {
+  int new_pos = (int)get_cursor() + offset;
+  if (new_pos < 0)
+    new_pos = 0;
+  else if (new_pos >= VGA_WIDTH * VGA_HEIGHT)
+    new_pos = VGA_WIDTH * VGA_HEIGHT - 1;
+
+  row = new_pos / VGA_WIDTH;
+  col = new_pos % VGA_WIDTH;
+  vga_update_cursor(get_cursor());
 }

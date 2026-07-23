@@ -1,4 +1,5 @@
 #include <kernel/console.h>
+#include <kernel/tty.h>
 
 console_driver_t *active_console = NULL;
 
@@ -84,4 +85,22 @@ void console_write(const char *str) {
     console_putchar(*str);
     str++;
   }
+}
+
+void console_nwrite(const char *str, size_t len) {
+  if (!active_console) {
+    return;
+  }
+
+  for (size_t i = 0; i < len; i++) {
+    console_putchar(str[i]);
+  }
+}
+
+void console_move_cursor(int offset) {
+  if (!active_console) {
+    return;
+  }
+
+  active_console->move_cursor(offset);
 }

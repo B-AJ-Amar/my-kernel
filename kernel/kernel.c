@@ -4,6 +4,8 @@
 #include <drivers/vga/vga.h>
 #include <idt.h>
 #include <io.h>
+#include <kernel/console.h>
+#include <kernel/tty.h>
 #include <pic.h>
 #include <stdio.h>
 __attribute__((section(".start"))) void kernel(void) {
@@ -18,25 +20,24 @@ __attribute__((section(".start"))) void kernel(void) {
   ps2_init();
   init_keyboard(KB_BACKEND_PS2, &layout_us);
 
-  enable_interrupts();
+  tty_init(local_keyboard_input, local_console_output);
 
-  vga_set_color(2, 0);
+  enable_interrupts();
 
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  printf("\033[4,0] Hello from the kernel\n");
-
+  printf("\033[4,0] Hello from the kernel\033[15,0]\n");
 
   keyboard_event_t *event;
 
   // todo: scredular
   while (1) {
-    while (keyboard_peek_event()) {
-      event = keyboard_pop_event();
-      if (event->type == KEY_PRESS) {
-        printf("%c", event->character);
-      }
+
+    // tty process
+    while (tty_check_events()) {
+      event = tty_read_event();
+      tty_handle_event(event);
     }
   }
 }

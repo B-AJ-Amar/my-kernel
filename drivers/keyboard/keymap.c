@@ -1,10 +1,14 @@
 #include <drivers/keyboard/keymap.h>
-
+#include <stdbool.h>
 // TODO: add protocol interface and add support for multiple protocols
 
 static const keyboard_key_t ps2_set2_keymap[256];
+static const keyboard_key_t ps2_set2_extended_keymap[256];
 
-keyboard_key_t keyboard_ps2_set2_decode(uint8_t scancode) {
+keyboard_key_t keyboard_ps2_set2_decode(uint8_t scancode, bool extended) {
+  if (extended)
+    return ps2_set2_extended_keymap[scancode];
+
   return ps2_set2_keymap[scancode];
 }
 
@@ -88,6 +92,7 @@ static const keyboard_key_t ps2_set2_keymap[256] = {
     [0x5D] = BACKSLASH_KEY,
 
     [0x66] = BACKSPACE_KEY,
+
     [0x69] = KEYPAD_1_KEY,
     [0x6B] = KEYPAD_4_KEY,
     [0x6C] = KEYPAD_7_KEY,
@@ -100,6 +105,8 @@ static const keyboard_key_t ps2_set2_keymap[256] = {
     [0x75] = KEYPAD_8_KEY,
     [0x76] = ESC_KEY,
 
+    [0x77] = NUM_LOCK_KEY,
+
     [0x79] = KEYPAD_PLUS_KEY,
     [0x7A] = KEYPAD_3_KEY,
     [0x7B] = KEYPAD_MINUS_KEY,
@@ -108,4 +115,66 @@ static const keyboard_key_t ps2_set2_keymap[256] = {
 
     [0x83] = F7_KEY,
 
+    [0x84] = PRINT_SCREEN_KEY, // part of special sequence
+};
+
+static const keyboard_key_t ps2_set2_extended_keymap[256] = {
+
+    /* Modifiers */
+
+    [0x11] = RIGHT_ALT_KEY,
+    [0x14] = RIGHT_CTRL_KEY,
+
+    /* Keypad */
+
+    [0x4A] = KEYPAD_DIVIDE_KEY,
+    [0x5A] = KEYPAD_ENTER_KEY,
+
+    /* Navigation */
+
+    [0x69] = END_KEY,
+    [0x6B] = LEFT_ARROW_KEY,
+    [0x6C] = HOME_KEY,
+
+    [0x70] = INSERT_KEY,
+    [0x71] = DELETE_KEY,
+    [0x72] = DOWN_ARROW_KEY,
+    [0x74] = RIGHT_ARROW_KEY,
+    [0x75] = UP_ARROW_KEY,
+
+    [0x7A] = PAGE_DOWN_KEY,
+    [0x7D] = PAGE_UP_KEY,
+
+    /* Windows keys */
+
+    [0x1F] = LEFT_GUI_KEY,
+    [0x27] = RIGHT_GUI_KEY,
+    [0x2F] = MENU_KEY,
+
+    /* ACPI */
+
+    // [0x37] = POWER_KEY,
+    // [0x3F] = SLEEP_KEY,
+    // [0x5E] = WAKE_KEY,
+
+    // /* Multimedia */
+
+    // [0x10] = WWW_SEARCH_KEY,
+    // [0x15] = PREVIOUS_TRACK_KEY,
+    // [0x1D] = WWW_FAVORITES_KEY,
+    // [0x21] = VOLUME_DOWN_KEY,
+    // [0x23] = MUTE_KEY,
+    // [0x2B] = STOP_KEY,
+    // [0x32] = VOLUME_UP_KEY,
+    // [0x34] = PLAY_PAUSE_KEY,
+    // [0x3A] = WWW_HOME_KEY,
+    // [0x3B] = NEXT_TRACK_KEY,
+    // [0x4D] = MEDIA_SELECT_KEY,
+    // [0x50] = MAIL_KEY,
+    // [0x4B] = CALCULATOR_KEY,
+    // [0x48] = MY_COMPUTER_KEY,
+    // [0x40] = WWW_FORWARD_KEY,
+    // [0x38] = WWW_REFRESH_KEY,
+    // [0x30] = WWW_STOP_KEY,
+    // [0x28] = WWW_BACK_KEY,
 };

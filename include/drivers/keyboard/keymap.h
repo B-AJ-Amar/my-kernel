@@ -1,5 +1,6 @@
 #ifndef DRIVER_KEYBOARD_KYMAP_H
 #define DRIVER_KEYBOARD_KYMAP_H
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef enum {
@@ -140,6 +141,6 @@ typedef enum {
 
 } keyboard_key_t;
 
-keyboard_key_t keyboard_ps2_set2_decode(uint8_t scancode);
+keyboard_key_t keyboard_ps2_set2_decode(uint8_t scancode, bool extended);
 
 #endif

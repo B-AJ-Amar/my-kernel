@@ -43,7 +43,7 @@ void ps2_keyboard_handle_interupt(void) {
     return;
   }
 
-  keyboard_handle_event(keyboard_ps2_set2_decode(scancode),
+  keyboard_handle_event(keyboard_ps2_set2_decode(scancode, __extended),
                         __released ? KEY_RELEASE : KEY_PRESS);
   __extended = false;
   __released = false;
