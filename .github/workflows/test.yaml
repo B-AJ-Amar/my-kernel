@@ -1,4 +1,5 @@
-name: test
+name: Test
+
 on:
   push:
     branches:
@@ -8,23 +9,28 @@ on:
       - '*.md'
       - '*.gdb'
       - '.gitignore'
-      - '.LICENSE'
       - '.pre-commit-config.yaml'
+      - 'LICENSE'
 
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build kernel-builder image
-        run: docker build -t kernel-builder .
+      - name: Pull kernel-builder image
+        run: docker pull ghcr.io/b-aj-amar/kernel-builder:latest
 
-      - name: Build kernel (make build)
-        run: make build
+      - name: Build kernel
+        run: make build-ci
 
-      - name: Verify disk image was produced
+      - name: Verify disk image
         run: |
           test -f bin/disk.img
           ls -lh bin/disk.img

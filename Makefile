@@ -40,7 +40,18 @@ format:
 
 fmt: format
 
+
+build-ci: docker-build-ci
+
 build: docker-build
+
+docker-build-ci:
+	docker run --rm \
+		--user "$(id -u):$(id -g)" \
+		-v "$(PWD):/workspace" \
+		-w /workspace \
+		ghcr.io/b-aj-amar/kernel-builder:latest \
+		make build-local
 
 docker-build:
 	docker run --rm \
@@ -51,8 +62,6 @@ docker-build:
 		make build-local
 
 build-local: clean build-kernel build-boot build-boot-elf concatinate
-
-
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
