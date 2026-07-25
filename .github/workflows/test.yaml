@@ -3,9 +3,13 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '!scripts/**'
-      - '!docs/**'
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '*.gdb'
+      - '.gitignore'
+      - '.LICENSE'
+      - '.pre-commit-config.yaml'
 
   workflow_dispatch:
 jobs:
