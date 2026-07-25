@@ -28,10 +28,17 @@ DISK_IMG := $(BIN_DIR)/disk.img
 all: clean build run
 
 format:
-	find . -regex '.*\.\(c\|h\|cpp\|hpp\|cc\|cxx\)' \
-		-exec clang-format -style=LLVM -i {} \;
+	@if [ "$(words $(MAKECMDGOALS))" -gt 1 ]; then \
+		clang-format -style=LLVM -i $(filter-out $@,$(MAKECMDGOALS)); \
+	else \
+		find . -regex '.*\.\(c\|h\|cpp\|hpp\|cc\|cxx\)' \
+			-exec clang-format -style=LLVM -i {} \; ; \
+	fi
 
-fmt: format	
+%:
+	@:
+
+fmt: format
 
 build: docker-build
 
@@ -98,7 +105,7 @@ debug:
 	qemu-system-x86_64 \
 		-drive file=$(DISK_IMG),format=raw \
 		-S -gdb tcp::1234
-		
+
 dbg: debug
 
 gdb:
