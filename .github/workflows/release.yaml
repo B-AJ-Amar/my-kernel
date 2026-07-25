@@ -1,0 +1,84 @@
+name: release
+on:
+  workflow_run:
+    workflows:
+      - test
+    types:
+      - completed
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+jobs:
+  release:
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # workflow_run does NOT checkout the tested commit by default,
+          # it checks out the default branch tip. Pin it explicitly.
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - run: npm install
+
+      - name: Semantic Release
+        id: semantic
+        run: |
+          BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          npx semantic-release
+
+          git fetch --tags
+
+          AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          echo "BEFORE: $BEFORE"
+          echo "AFTER: $AFTER"
+
+          if [ "$BEFORE" != "$AFTER" ]; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_version=${AFTER#v}" >> $GITHUB_OUTPUT
+            echo "new_release_tag=$AFTER" >> $GITHUB_OUTPUT
+            echo "new_release_git_head=$(git rev-list -n 1 $AFTER)" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug semantic-release outputs
+        run: |
+          echo "published: ${{ steps.semantic.outputs.new_release_published }}"
+          echo "version:   ${{ steps.semantic.outputs.new_release_version }}"
+          echo "tag:       ${{ steps.semantic.outputs.new_release_tag }}"
+          echo "git_head:  ${{ steps.semantic.outputs.new_release_git_head }}"
+
+      - name: Check out the release commit
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: git checkout ${{ steps.semantic.outputs.new_release_git_head }}
+
+        # TODO: pre build the image
+      - name: Build kernel-builder image
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: docker build -t kernel-builder .
+
+      - name: Build kernel (make build)
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: make build
+
+      - name: Upload disk image to release
+        if: steps.semantic.outputs.new_release_published == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ steps.semantic.outputs.new_release_tag }}" \
+            bin/disk.img \
+            --clobber

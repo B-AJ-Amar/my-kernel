@@ -1,0 +1,26 @@
+name: test
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '!scripts/**'
+      - '!docs/**'
+
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build kernel-builder image
+        run: docker build -t kernel-builder .
+
+      - name: Build kernel (make build)
+        run: make build
+
+      - name: Verify disk image was produced
+        run: |
+          test -f bin/disk.img
+          ls -lh bin/disk.img
