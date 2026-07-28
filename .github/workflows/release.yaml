@@ -1,11 +1,18 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows:
-      - Test
-    types:
-      - completed
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '*.gdb'
+      - '.gitignore'
+      - '.pre-commit-config.yaml'
+      - 'LICENSE'
+
+  workflow_dispatch:
 
 permissions:
   contents: write
