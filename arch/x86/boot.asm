@@ -15,11 +15,11 @@ KERNEL_ADDR_PM   equ 0x100000 ;protected mod address
 
 start:
     mov [boot_drive], dl
-    
+
     ;A20
     mov ax, 0x2401
     int 0x15
-    
+
     xor ax, ax
     mov es, ax
     mov ds, ax
@@ -28,24 +28,24 @@ start:
     ;text mode (to clear the screen)
     mov ah, 0x0
     mov al, 0x3
-    int 0x10  
+    int 0x10
 
 
     call load_kernel
-    
+
     cli
     lgdt [gdt_decriptor]
     mov eax, cr0
     or eax, 1
     mov cr0, eax ;change protected mod flag
-    
-    
+
+
     jmp CODE_SEG:start_protected_mode
     hlt
-    
+
 boot_drive:
     db 0
-        
+
 ; read from disk https://en.wikipedia.org/wiki/INT_13H
 load_kernel:
     mov bx, KERNEL_ADDR_RM;load to addr
@@ -73,7 +73,7 @@ disk_error:
     mov ax, 0x0444      ; AH = 04 red , 44 D
     mov [es:di], ax
     jmp $
-  
+
 gdt_start:
     gdt_null:
         dd 0x0
@@ -87,11 +87,11 @@ gdt_start:
         db 0x0       ;base[24->31]
     gdt_data_seg:
         dw 0xffff
-        dw 0x0 
-        db 0x0       
-        db 10010010b 
+        dw 0x0
+        db 0x0
+        db 10010010b
         db 11001111b
-        db 0x0       
+        db 0x0
 gdt_end:
 
 gdt_decriptor:
@@ -111,8 +111,8 @@ start_protected_mode:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    mov esp, 0x90000 
-    
+    mov esp, 0x90000
+
     ; print for test
     mov ebx,0xB8000
     mov esi,msg
@@ -129,11 +129,11 @@ start_protected_mode:
         jmp print
     print_end:
 
-    mov esi, KERNEL_ADDR_RM 
-    mov edi, KERNEL_ADDR_PM    
+    mov esi, KERNEL_ADDR_RM
+    mov edi, KERNEL_ADDR_PM
     ;! dont remove token i will use it in the build time
-    mov ecx, 17376 ; <KERNEL_SIZE> TODO: count dwords to copy 
-    rep movsb 
+    mov ecx, 17408 ; <KERNEL_SIZE> TODO: count dwords to copy
+    rep movsb
 kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM
     hlt

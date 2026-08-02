@@ -9,9 +9,9 @@
 // phisical key -> protocol (e.g scan_set2 (keymap.c)) -> logical key (e.g
 // KEY_Q) -> layout (e.g 'a' | 'A' | 'q' | 'Q')
 
-static char *keyboard_layout_get_current_keys();
+static const char *keyboard_layout_get_current_keys();
 
-static keyboard_layout_t *current_layout;
+static const keyboard_layout_t *current_layout;
 static keyboard_state_t current_state = {0};
 static keyboard_driver_t *current_driver;
 static keyboard_event_queue event_queue;
@@ -40,7 +40,7 @@ void init_keyboard(kb_backend_t backend, const keyboard_layout_t *layout) {
   current_driver->init();
 }
 
-keyboard_layout_t *keyboard_get_layout(void) { return current_layout; }
+const keyboard_layout_t *keyboard_get_layout(void) { return current_layout; }
 
 void keyboard_set_layout(const keyboard_layout_t *layout) {
   current_layout = layout;
@@ -109,7 +109,7 @@ bool keyboard_alt(void) {
 
 bool keyboard_caps_lock(void) { return current_state.caps_lock; }
 
-static char *keyboard_layout_get_current_keys() {
+static const char *keyboard_layout_get_current_keys() {
   if (keyboard_shift() || keyboard_caps_lock()) {
     return current_layout->keys_upper;
   } else {

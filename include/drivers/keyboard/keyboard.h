@@ -47,7 +47,7 @@ typedef struct {
 
 void init_keyboard(kb_backend_t backend, const keyboard_layout_t *layout);
 bool is_printable_key(uint8_t key_code);
-keyboard_layout_t *keyboard_get_layout(void);
+const keyboard_layout_t *keyboard_get_layout(void);
 void keyboard_set_layout(const keyboard_layout_t *layout);
 keyboard_driver_t *keyboard_get_driver(void);
 // ? the protocol (ps2,usb ..) should know which key is presed/released ,this

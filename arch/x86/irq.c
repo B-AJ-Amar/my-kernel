@@ -2,9 +2,11 @@
 #include <io.h>
 #include <irq.h>
 #include <pic.h>
+#include <pit.h>
 #include <stdio.h>
 // TODO: keyboard+ time drivers
 static void __irq_keyboard_handler__();
+static void __irq_timer_handler__();
 
 void irq_handler(interupt_registers_t *regs) {
   switch (regs->int_no) {
@@ -13,7 +15,7 @@ void irq_handler(interupt_registers_t *regs) {
     break;
 
   case 32:
-    // timer_handler();
+    __irq_timer_handler__();
     break;
   }
 
@@ -26,3 +28,5 @@ static void __irq_keyboard_handler__() {
     driver->interupt_handler();
   }
 }
+
+static void __irq_timer_handler__() { pit_interrupt_handler(); }
