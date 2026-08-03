@@ -5,10 +5,6 @@
 *  add sleep function ([6369c92](https://github.com/B-AJ-Amar/my-kernel/commit/6369c9283ed41ab74d12e7ebe45faa3ea9078512))
 * **timer:** add pit driver ([09b56d4](https://github.com/B-AJ-Amar/my-kernel/commit/09b56d4c4348c08e2993344f4410a40e1c368151))
 
-### Internal
-
-* **release:** 0.1.0 [skip ci] ([450efbb](https://github.com/B-AJ-Amar/my-kernel/commit/450efbb44bf1ea1aa6c9de167e419056469e7dfc))
-
 ## 0.0.0 (2026-07-28)
 
 ### Features
