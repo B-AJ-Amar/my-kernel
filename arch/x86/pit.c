@@ -3,10 +3,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
-static uint32_t pit_ticks = 0;
-static uint32_t pit_frequency = PIT_FREQUENCY;
+static uint32_t pit_ticks, pit_frequency;
 
 void pit_init(uint32_t frequency) {
+  pit_ticks = 0;
   uint32_t divisor = PIT_DEFAULT_FREQUENCY / frequency;
   pit_frequency = frequency;
 

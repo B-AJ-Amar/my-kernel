@@ -8,6 +8,7 @@
 #include <kernel/tty.h>
 #include <pic.h>
 #include <pit.h>
+#include <sleep.h>
 #include <stdio.h>
 __attribute__((section(".start"))) void kernel(void) {
 
@@ -30,7 +31,7 @@ __attribute__((section(".start"))) void kernel(void) {
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  pit_wait_sec(3);
+  sleep(3000);
   printf("\033[4,0] Hello from the kernel\n");
 
   keyboard_event_t *event;
