@@ -1,9 +1,3 @@
-## [0.1.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.0.0...v0.1.0) (2026-08-02)
-
-### Features
-
-* **timer:** add pit driver ([09b56d4](https://github.com/B-AJ-Amar/my-kernel/commit/09b56d4c4348c08e2993344f4410a40e1c368151))
-
 ## 1.0.0 (2026-07-28)
 
 ### Features
