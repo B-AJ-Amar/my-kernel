@@ -11,6 +11,8 @@ static int _utoa(char *buf, size_t buf_size, uint32_t val, int base,
 
 // TODO: add colors support e.g `\033[0;31m`
 
+void clear_screen() { console_clear(); }
+
 int puts(const char *str) {
   if (!str)
     return -1;

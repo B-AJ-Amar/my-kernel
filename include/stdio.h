@@ -3,6 +3,8 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+
+void clear_screen();
 int puts(const char *str);
 int putchar(char c);
 int vsnprintf(char *buf, size_t n, const char *format, va_list ap);
