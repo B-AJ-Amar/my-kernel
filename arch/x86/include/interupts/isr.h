@@ -1,7 +1,7 @@
 #ifndef ISR_H
 #define ISR_H
 
-#include <interupt.h>
+#include <interupts/interupt.h>
 #include <stdint.h>
 
 extern const char *exception_names[32];

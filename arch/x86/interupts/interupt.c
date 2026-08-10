@@ -1,8 +1,8 @@
 
-#include <interupt.h>
+#include <interupts/interupt.h>
 #include <io.h>
-#include <irq.h>
-#include <isr.h>
+#include <interupts/irq.h>
+#include <interupts/isr.h>
 #include <stdio.h>
 
 // https://wiki.osdev.org/Exceptions

@@ -1,8 +1,8 @@
 #include <drivers/keyboard/keyboard.h>
 #include <io.h>
-#include <irq.h>
-#include <pic.h>
-#include <pit.h>
+#include <interupts/irq.h>
+#include <interupts/pic.h>
+#include <timer/pit.h>
 #include <stdio.h>
 // TODO: keyboard+ time drivers
 static void __irq_keyboard_handler__();

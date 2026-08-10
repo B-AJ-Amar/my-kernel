@@ -2,12 +2,12 @@
 #include <drivers/keyboard/layout.h>
 #include <drivers/ps2/controller.h>
 #include <drivers/vga/vga.h>
-#include <idt.h>
+#include <interupts/idt.h>
 #include <io.h>
 #include <kernel/console.h>
 #include <kernel/tty.h>
-#include <pic.h>
-#include <pit.h>
+#include <interupts/pic.h>
+#include <timer/pit.h>
 #include <sleep.h>
 #include <stdio.h>
 __attribute__((section(".start"))) void kernel(void) {

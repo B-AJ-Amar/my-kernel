@@ -1,5 +1,5 @@
 #include <io.h>
-#include <pic.h>
+#include <interupts/pic.h>
 #include <stdio.h>
 // 8259A pic dadasheet : https://pccomponents.com/datasheets/INTEL-P8259A2.pdf
 // you will ICW config : datasheet pages 10,11,12

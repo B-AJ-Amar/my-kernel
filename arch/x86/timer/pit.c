@@ -1,5 +1,5 @@
 #include <io.h>
-#include <pit.h>
+#include <timer/pit.h>
 #include <stdint.h>
 #include <stdio.h>
 

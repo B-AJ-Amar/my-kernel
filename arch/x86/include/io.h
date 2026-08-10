@@ -1,7 +1,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include <idt.h>
+#include <interupts/idt.h>
 #include <stdint.h>
 
 #define KERNEL_CS 0x8
