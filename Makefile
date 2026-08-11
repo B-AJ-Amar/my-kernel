@@ -1,13 +1,14 @@
-.PHONY: all build docker-build build-local build-kernel build-boot build-boot-elf \
-        concatinate run debug clean format
+.PHONY: all build build-ci docker-build docker-build-ci build-local \
+        build-kernel build-boot build-boot-elf concatinate run debug \
+        clean format fmt dbg gdb
 
 ARCH := x86
 
-CFLAGS := -g -ffreestanding -m32 -Iinclude -Iarch/$(ARCH)/include -nostdlib
+CFLAGS := -g -ffreestanding -m32 -Iinclude -Iarch/$(ARCH)/include
+LDFLAGS := -m32 -ffreestanding -nostdlib -T kernel/linker.ld
 
 BUILD_DIR := build
 BIN_DIR := bin
-
 
 C_SRCS := $(shell find kernel drivers lib arch -name '*.c')
 ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -name 'boot.asm')
@@ -35,27 +36,23 @@ format:
 			-exec clang-format -style=LLVM -i {} \; ; \
 	fi
 
-%:
-	@:
-
 fmt: format
-
-
-build-ci: docker-build-ci
 
 build: docker-build
 
-docker-build-ci:
+build-ci: docker-build-ci
+
+docker-build:
 	docker run --rm \
-		--user "$(id -u):$(id -g)" \
+		--user "$(shell id -u):$(shell id -g)" \
 		-v "$(PWD):/workspace" \
 		-w /workspace \
 		ghcr.io/b-aj-amar/kernel-builder:latest \
 		make build-local
 
-docker-build:
+docker-build-ci:
 	docker run --rm \
-		--user "$(id -u):$(id -g)" \
+		--user "$(shell id -u):$(shell id -g)" \
 		-v "$(PWD):/workspace" \
 		-w /workspace \
 		ghcr.io/b-aj-amar/kernel-builder:latest \
@@ -68,7 +65,6 @@ $(BUILD_DIR)/%.o: %.c
 	i686-elf-gcc $(CFLAGS) -c $< -o $@
 
 
-
 $(BUILD_DIR)/%_asm.o: %.asm
 	@mkdir -p $(dir $@)
 	nasm -f elf32 $< -o $@
@@ -78,11 +74,11 @@ $(BUILD_DIR)/%_asm.o: %.asm
 build-kernel: $(KERNEL_OBJS)
 	@mkdir -p $(BUILD_DIR) $(BIN_DIR)
 
-	i686-elf-ld \
-		-m elf_i386 \
-		-T kernel/linker.ld \
+	i686-elf-gcc \
+		$(LDFLAGS) \
 		-o $(KERNEL_ELF) \
-		$(KERNEL_OBJS)
+		$(KERNEL_OBJS) \
+		-lgcc
 
 	i686-elf-objcopy \
 		-O binary \
@@ -98,13 +94,14 @@ build-boot:
 
 build-boot-elf:
 	@mkdir -p $(BUILD_DIR)
-	nasm -f elf32 -DELF_BUILD arch/$(ARCH)/boot/boot.asm -o $(BOOT_ELF)
-
+	nasm -f elf32 -DELF_BUILD \
+		arch/$(ARCH)/boot/boot.asm \
+		-o $(BOOT_ELF)
 
 
 concatinate:
+	@mkdir -p $(BIN_DIR)
 	cat $(BOOT_BIN) $(KERNEL_BIN) > $(DISK_IMG)
-
 
 run:
 	qemu-system-x86_64 \
@@ -113,7 +110,8 @@ run:
 debug:
 	qemu-system-x86_64 \
 		-drive file=$(DISK_IMG),format=raw \
-		-S -gdb tcp::1234
+		-S \
+		-gdb tcp::1234
 
 dbg: debug
 
