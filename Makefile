@@ -11,7 +11,7 @@ BUILD_DIR := build
 BIN_DIR := bin
 
 C_SRCS := $(shell find kernel drivers lib arch -name '*.c')
-ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -name 'boot.asm')
+ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -path 'arch/*/boot/*')
 
 C_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SRCS))
 ASM_OBJS := $(patsubst %.asm,$(BUILD_DIR)/%_asm.o,$(ASM_SRCS))
@@ -37,6 +37,8 @@ format:
 	fi
 
 fmt: format
+
+br: build run
 
 build: docker-build
 
@@ -90,11 +92,11 @@ build-kernel: $(KERNEL_OBJS)
 build-boot:
 	@mkdir -p $(BIN_DIR)
 	./scripts/kernel-size.sh $(ARCH)
-	nasm -f bin arch/$(ARCH)/boot/boot.asm -o $(BOOT_BIN)
+	nasm -f bin -I arch/$(ARCH)/boot/ arch/$(ARCH)/boot/boot.asm -o $(BOOT_BIN)
 
 build-boot-elf:
 	@mkdir -p $(BUILD_DIR)
-	nasm -f elf32 -DELF_BUILD \
+	nasm -f elf32 -DELF_BUILD -I arch/$(ARCH)/boot/ \
 		arch/$(ARCH)/boot/boot.asm \
 		-o $(BOOT_ELF)
 
