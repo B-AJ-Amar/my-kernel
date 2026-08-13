@@ -6,28 +6,35 @@
 #include <io.h>
 #include <kernel/console.h>
 #include <kernel/tty.h>
+#include <kernel/kernel.h>
 #include <interupts/pic.h>
 #include <timer/pit.h>
 #include <sleep.h>
 #include <stdio.h>
-__attribute__((section(".start"))) void kernel(void) {
 
+__attribute__((section(".start"))) void kernel(void) {
+  
+  boot_info_t *boot =
+  (boot_info_t *)BOOT_INFO_ADDR;
+  
   disable_interrupts();
   init_idt();
   pic_init();
 
   pit_init(PIT_FREQUENCY);
-
+  
   vga_init();
   console_set(&vga_console);
-
+  
   ps2_init();
   init_keyboard(KB_BACKEND_PS2, &layout_us);
-
+  
   tty_init(local_keyboard_input, local_console_output);
-
+  
   enable_interrupts();
-
+  
+  
+  printf("kernel address: 0x%x\n", boot->kernel_addr);
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
@@ -46,3 +53,4 @@ __attribute__((section(".start"))) void kernel(void) {
     }
   }
 }
+

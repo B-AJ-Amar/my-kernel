@@ -19,4 +19,6 @@ typedef struct {
 } memory_map_t;
 
 
+void pmm_init();
+
 #endif

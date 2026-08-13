@@ -17,6 +17,8 @@ KERNEL_ADDR_PM equ 0x100000
 KERNEL_SIZE equ 17376
 KERNEL_SECTORS equ 34
 
+BOOT_INFO_ADDR equ 0x7000
+
 start:
     mov [boot_drive], dl
     mov ax, 0x2401
@@ -64,17 +66,11 @@ start_protected_mode:
     mov ebx, 0xB8000
     mov esi, msg
     mov ah, 0x0f
-    print:
-        mov al, [esi]
-        cmp al, 0
-        je print_end
-        mov ah, 0x0F
-        mov [ebx], ax
-        inc esi
-        add ebx, 2
-        jmp print
-    print_end:
 
+    call print
+    
+    call bois_info
+    
     mov esi, KERNEL_ADDR_RM
     mov edi, KERNEL_ADDR_PM
     mov ecx, KERNEL_SIZE
@@ -82,6 +78,27 @@ start_protected_mode:
 kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM
     hlt
+
+bois_info:
+    mov dword [BOOT_INFO_ADDR], KERNEL_ADDR_PM
+    mov dword [BOOT_INFO_ADDR + 4], KERNEL_SIZE
+    mov dword [BOOT_INFO_ADDR + 8], E820_COUNT_ADDR
+    mov dword [BOOT_INFO_ADDR + 12], E820_ENTRIES_ADDR
+    mov dword [BOOT_INFO_ADDR + 16], E820_MAX_ENTRIES
+    mov dword [BOOT_INFO_ADDR + 20], E820_ENTRY_SIZE
+
+
+print:
+    mov al, [esi]
+    cmp al, 0
+    je .print_end
+    mov ah, 0x0F
+    mov [ebx], ax
+    inc esi
+    add ebx, 2
+    jmp print
+    .print_end:
+        ret
 
 times 510-($-$$) db 0
 dw 0xAA55
