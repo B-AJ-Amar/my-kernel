@@ -13,6 +13,10 @@ DM_BUFFER equ 0x8000
 KERNEL_ADDR_RM equ 0x1000
 KERNEL_ADDR_PM equ 0x100000
 
+; this will be updated by the build script
+KERNEL_SIZE equ 17376
+KERNEL_SECTORS equ 34
+
 start:
     mov [boot_drive], dl
     mov ax, 0x2401
@@ -73,8 +77,7 @@ start_protected_mode:
 
     mov esi, KERNEL_ADDR_RM
     mov edi, KERNEL_ADDR_PM
-    ;! dont remove token i will use it in the build time
-    mov ecx, 17376 ; <KERNEL_SIZE>
+    mov ecx, KERNEL_SIZE
     rep movsb
 kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM

@@ -7,8 +7,7 @@ load_kernel:
     mov cl, 0x02
     mov dl, [boot_drive]
     mov ah, 0x02
-    ;! dont remove token i will use it in the build time
-    mov al, 34 ; <SECTORS_LEN>
+    mov al, KERNEL_SECTORS
     int 0x13
 
     jc disk_error
