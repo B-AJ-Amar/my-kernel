@@ -4,7 +4,7 @@
 
 ARCH := x86
 
-CFLAGS := -g -ffreestanding -m32 -Iinclude -Iarch/$(ARCH)/include
+CFLAGS := -g -ffreestanding -m32 -I. -Iinclude -Iarch/$(ARCH)
 LDFLAGS := -m32 -ffreestanding -nostdlib -T kernel/linker.ld
 
 BUILD_DIR := build
