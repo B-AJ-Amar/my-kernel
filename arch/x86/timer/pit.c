@@ -1,7 +1,7 @@
 #include <io.h>
-#include <timer/pit.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <timer/pit.h>
 
 static uint64_t pit_ticks, pit_frequency;
 

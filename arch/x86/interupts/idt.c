@@ -1,8 +1,8 @@
 
 
 #include <interupts/idt.h>
-#include <io.h>
 #include <interupts/isr.h>
+#include <io.h>
 #include <stdint.h>
 #include <string.h>
 
