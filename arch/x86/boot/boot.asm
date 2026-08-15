@@ -6,6 +6,7 @@ global start
 org 0x7C00
 %endif
 
+
 CODE_SEG equ gdt_code_seg - gdt_start
 DATA_SEG equ gdt_data_seg - gdt_start
 DM_BUFFER equ 0x8000
@@ -86,7 +87,7 @@ bois_info:
     mov dword [BOOT_INFO_ADDR + 12], E820_ENTRIES_ADDR
     mov dword [BOOT_INFO_ADDR + 16], E820_MAX_ENTRIES
     mov dword [BOOT_INFO_ADDR + 20], E820_ENTRY_SIZE
-
+    
 
 print:
     mov al, [esi]

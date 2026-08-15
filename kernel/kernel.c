@@ -6,8 +6,9 @@
 #include <interupts/pic.h>
 #include <io.h>
 #include <kernel/console.h>
-#include <kernel/kernel.h>
 #include <kernel/tty.h>
+#include <memory/pmm.h>
+#include <memory/boot_info.h>
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
@@ -15,6 +16,7 @@
 __attribute__((section(".start"))) void kernel(void) {
 
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
+  pmm_init(boot->kernel_addr, boot->kernel_size, boot->e820_entries_count, boot->e820_entries_addr);
 
   disable_interrupts();
   init_idt();
