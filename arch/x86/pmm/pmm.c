@@ -16,7 +16,7 @@ static e820_map_t e820_entries;
 static uint8_t frame_bitmap[BITMAP_SIZE];
 
 void pmm_init(uint64_t kernel_addr, uint64_t kernel_size,
-              uint64_t e820_entries_count, uint64_t e820_entries_addr) {
+              uint64_t e820_entries_count, uint32_t e820_entries_addr) {
   e820_entries.entries = (e820_entry_t *)e820_entries_addr;
   e820_entries.count = e820_entries_count;
   memset(frame_bitmap, 0xFF, sizeof(frame_bitmap));
@@ -75,6 +75,15 @@ uint32_t pmm_alloc_frame(void) {
       bitmap_reserve(frame);
       return frame * FRAME_SIZE;
     }
+  }
+  return 0;
+}
+
+uint32_t pmm_alloc_empty_frame(void) {
+  uint32_t addr = pmm_alloc_frame();
+  if (addr != 0) {
+    memset((void *)(uint32_t)addr, 0, FRAME_SIZE);
+    return addr;
   }
   return 0;
 }

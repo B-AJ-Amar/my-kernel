@@ -12,6 +12,7 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
+#include <vmm/vmm.h>
 
 __attribute__((section(".start"))) void kernel(void) {
 
@@ -34,6 +35,7 @@ __attribute__((section(".start"))) void kernel(void) {
   tty_init(local_keyboard_input, local_console_output);
 
   enable_interrupts();
+  vmm_init();
 
   printf("kernel address: 0x%x\n", boot->kernel_addr);
   printf("\033[1,4] Hello from the kernel\n");

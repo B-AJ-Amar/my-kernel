@@ -23,9 +23,10 @@ typedef struct {
 } e820_map_t;
 
 void pmm_init(uint64_t kernel_addr, uint64_t kernel_size,
-              uint64_t e820_entries_count, uint64_t e820_entries_addr);
+              uint64_t e820_entries_count, uint32_t e820_entries_addr);
 
 uint32_t pmm_alloc_frame(void);
+uint32_t pmm_alloc_empty_frame(void);
 void pmm_free_frame(uint32_t address);
 
 #endif

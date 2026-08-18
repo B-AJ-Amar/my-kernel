@@ -13,6 +13,7 @@
 #define PAGE_F_SIZE (1U << 7)
 #define PAGE_F_GLOBAL (1U << 8)
 #define PAGE_ENTRIES 1024
+#define PAGE_SIZE 4096
 
 // ? https://wiki.osdev.org/X86_Paging
 
