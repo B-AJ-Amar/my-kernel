@@ -38,6 +38,8 @@ format:
 
 fmt: format
 
+f: format
+
 br: build run
 
 build: docker-build
