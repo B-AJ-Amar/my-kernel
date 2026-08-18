@@ -7,8 +7,8 @@
 #include <io.h>
 #include <kernel/console.h>
 #include <kernel/tty.h>
-#include <memory/boot_info.h>
-#include <memory/pmm.h>
+#include <pmm/boot_info.h>
+#include <pmm/pmm.h>
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
