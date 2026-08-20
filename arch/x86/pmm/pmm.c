@@ -1,8 +1,8 @@
 #include <pmm/pmm.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #define FRAME_SIZE 4096
 #define MAX_PHYS_MEMORY 0x100000000ULL
@@ -24,20 +24,23 @@ void pmm_init(uint64_t kernel_addr, uint64_t kernel_size,
   e820_entries.count = e820_entries_count;
   memset(frame_bitmap, 0xFF, sizeof(frame_bitmap));
 
-  printf("[\033[2,0]x\033[15,0]] e820 entries count : %u\n", e820_entries.count);
+  printf("[\033[2,0]x\033[15,0]] e820 entries count : %u\n",
+         e820_entries.count);
   for (uint32_t i = 0; i < e820_entries.count; i++) {
     e820_entry_t *entry = &e820_entries.entries[i];
     if (entry->type == E820_TYPE_USABLE) {
       mem_set_range(entry->base, entry->length, false);
     }
 
-    printf("[\033[2,0]x\033[15,0]] E820 Entry %d: Base: 0x%llx, Length: 0x%llx, Type: %u\n", i,
-           entry->base, entry->length, entry->type);
+    printf("[\033[2,0]x\033[15,0]] E820 Entry %d: Base: 0x%llx, Length: "
+           "0x%llx, Type: %u\n",
+           i, entry->base, entry->length, entry->type);
   }
 
   uint64_t kernel_end_addr = (uint64_t)&kernel_end;
   uint64_t kernel_length = kernel_size;
-  if (kernel_end_addr > kernel_addr && kernel_end_addr - kernel_addr > kernel_length) {
+  if (kernel_end_addr > kernel_addr &&
+      kernel_end_addr - kernel_addr > kernel_length) {
     kernel_length = kernel_end_addr - kernel_addr;
   }
 

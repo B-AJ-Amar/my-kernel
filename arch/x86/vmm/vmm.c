@@ -11,7 +11,7 @@ static page_directory_t *kernel_page_dir;
 void vmm_init(void) {
   uint32_t page_dir = pmm_alloc_frame();
   uint32_t table_frame = pmm_alloc_frame();
-  
+
   printf("[\033[2,0]x\033[15,0]] page dir allocated at: 0x%x\n", page_dir);
   printf("[\033[2,0]x\033[15,0]] page table allocated at: 0x%x\n", table_frame);
   if (table_frame == 0 || page_dir == 0) {
@@ -39,15 +39,13 @@ void vmm_init(void) {
 }
 
 static void enable_paging(uint32_t page_dir) {
-    asm volatile(
-        ".intel_syntax noprefix\n\t"
-        "mov cr3, %0\n\t"
-        "mov eax, cr0\n\t"
-        "or eax, 0x80000001\n\t"
-        "mov cr0, eax\n\t"
-        ".att_syntax prefix\n\t"
-        :
-        : "r"(page_dir)
-        : "eax", "memory"
-    );
+  asm volatile(".intel_syntax noprefix\n\t"
+               "mov cr3, %0\n\t"
+               "mov eax, cr0\n\t"
+               "or eax, 0x80000001\n\t"
+               "mov cr0, eax\n\t"
+               ".att_syntax prefix\n\t"
+               :
+               : "r"(page_dir)
+               : "eax", "memory");
 }

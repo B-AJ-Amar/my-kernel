@@ -16,8 +16,6 @@
 
 __attribute__((section(".start"))) void kernel(void) {
 
-  
-
   disable_interrupts();
   init_idt();
   pic_init();
@@ -33,13 +31,13 @@ __attribute__((section(".start"))) void kernel(void) {
   tty_init(local_keyboard_input, local_console_output);
 
   enable_interrupts();
-  
+
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   pmm_init(boot->kernel_addr, boot->kernel_size, boot->e820_entries_count,
-    boot->e820_entries_addr);
-    
+           boot->e820_entries_addr);
+
   vmm_init();
-  
+
   printf("kernel address: 0x%x\n", boot->kernel_addr);
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");

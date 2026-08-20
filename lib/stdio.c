@@ -6,7 +6,8 @@
 #include <stdio.h>
 #define MAX_BUFFER_SIZE 2096
 
-static int _utoa(char *buf, size_t buf_size, uint64_t val, int base, int uppercase) ;
+static int _utoa(char *buf, size_t buf_size, uint64_t val, int base,
+                 int uppercase);
 
 // TODO: add colors support e.g `\033[0;31m`
 
@@ -115,9 +116,9 @@ int vsnprintf(char *buf, size_t n, const char *format, va_list ap) {
         size_t remaining = (buf && total_written < n) ? (n - total_written) : 0;
         char *target_buf = buf ? &buf[total_written] : NULL;
 
-        int64_t val = (long_count == 2) ? va_arg(ap, long long)
-                     : (long_count == 1) ? va_arg(ap, long)
-                                         : va_arg(ap, int);
+        int64_t val = (long_count == 2)   ? va_arg(ap, long long)
+                      : (long_count == 1) ? va_arg(ap, long)
+                                          : va_arg(ap, int);
         if (val < 0) {
           if (buf && total_written < n) {
             buf[total_written] = '-';
@@ -132,18 +133,18 @@ int vsnprintf(char *buf, size_t n, const char *format, va_list ap) {
         size_t remaining = (buf && total_written < n) ? (n - total_written) : 0;
         char *target_buf = buf ? &buf[total_written] : NULL;
 
-        uint64_t val = (long_count == 2) ? va_arg(ap, unsigned long long)
-                      : (long_count == 1) ? va_arg(ap, unsigned long)
-                                          : va_arg(ap, unsigned int);
+        uint64_t val = (long_count == 2)   ? va_arg(ap, unsigned long long)
+                       : (long_count == 1) ? va_arg(ap, unsigned long)
+                                           : va_arg(ap, unsigned int);
         total_written += _utoa(target_buf, remaining, val, 10, 0);
       } else if (*format == 'x' || *format == 'X') {
         int upper = (*format == 'X');
         size_t remaining = (buf && total_written < n) ? (n - total_written) : 0;
         char *target_buf = buf ? &buf[total_written] : NULL;
 
-        uint64_t val = (long_count == 2) ? va_arg(ap, unsigned long long)
-                      : (long_count == 1) ? va_arg(ap, unsigned long)
-                                          : va_arg(ap, unsigned int);
+        uint64_t val = (long_count == 2)   ? va_arg(ap, unsigned long long)
+                       : (long_count == 1) ? va_arg(ap, unsigned long)
+                                           : va_arg(ap, unsigned int);
         total_written += _utoa(target_buf, remaining, val, 16, upper);
       } else {
         if (buf && total_written < n) {
@@ -170,8 +171,6 @@ int vsnprintf(char *buf, size_t n, const char *format, va_list ap) {
 
   return (int)total_written;
 }
-
-
 
 int _utoa(char *buf, size_t buf_size, uint64_t val, int base, int uppercase) {
   char tmp[64];
