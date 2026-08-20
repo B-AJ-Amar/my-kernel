@@ -9,7 +9,7 @@ org 0x7C00
 
 CODE_SEG equ gdt_code_seg - gdt_start
 DATA_SEG equ gdt_data_seg - gdt_start
-DM_BUFFER equ 0x8000
+STACK_PTR equ 0x8000
 
 KERNEL_ADDR_RM equ 0x1000
 KERNEL_ADDR_PM equ 0x100000
@@ -27,7 +27,7 @@ start:
     xor ax, ax
     mov es, ax
     mov ds, ax
-    mov bp, 0x8000
+    mov bp, STACK_PTR
     mov sp, bp
     mov ah, 0x0
     mov al, 0x3
@@ -70,7 +70,7 @@ start_protected_mode:
 
     call print
     
-    call bois_info
+    call boot_info
     
     mov esi, KERNEL_ADDR_RM
     mov edi, KERNEL_ADDR_PM
@@ -80,10 +80,11 @@ kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM
     hlt
 
-bois_info:
+boot_info:
     mov dword [BOOT_INFO_ADDR], KERNEL_ADDR_PM
     mov dword [BOOT_INFO_ADDR + 4], KERNEL_SIZE
-    mov dword [BOOT_INFO_ADDR + 8], E820_COUNT_ADDR
+    movzx eax, word [E820_COUNT_ADDR]
+    mov dword [BOOT_INFO_ADDR + 8], eax
     mov dword [BOOT_INFO_ADDR + 12], E820_ENTRIES_ADDR
     mov dword [BOOT_INFO_ADDR + 16], E820_MAX_ENTRIES
     mov dword [BOOT_INFO_ADDR + 20], E820_ENTRY_SIZE
