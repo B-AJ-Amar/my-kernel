@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 #define FRAME_SIZE 4096
 #define MAX_PHYS_MEMORY 0x100000000ULL
@@ -12,23 +13,35 @@ static void mem_set_range(uint64_t base, uint64_t length, bool is_reserved);
 static void bitmap_set_range(uint32_t start_frame, uint32_t num_frames,
                              bool is_reserved);
 
+extern char kernel_end;
+
 static e820_map_t e820_entries;
 static uint8_t frame_bitmap[BITMAP_SIZE];
 
 void pmm_init(uint64_t kernel_addr, uint64_t kernel_size,
-              uint64_t e820_entries_count, uint32_t e820_entries_addr) {
+              uint32_t e820_entries_count, uint32_t e820_entries_addr) {
   e820_entries.entries = (e820_entry_t *)e820_entries_addr;
   e820_entries.count = e820_entries_count;
   memset(frame_bitmap, 0xFF, sizeof(frame_bitmap));
 
+  printf("[\033[2,0]x\033[15,0]] e820 entries count : %u\n", e820_entries.count);
   for (uint32_t i = 0; i < e820_entries.count; i++) {
     e820_entry_t *entry = &e820_entries.entries[i];
     if (entry->type == E820_TYPE_USABLE) {
       mem_set_range(entry->base, entry->length, false);
     }
+
+    printf("[\033[2,0]x\033[15,0]] E820 Entry %d: Base: 0x%llx, Length: 0x%llx, Type: %u\n", i,
+           entry->base, entry->length, entry->type);
   }
 
-  mem_set_range(kernel_addr, kernel_size, true);
+  uint64_t kernel_end_addr = (uint64_t)&kernel_end;
+  uint64_t kernel_length = kernel_size;
+  if (kernel_end_addr > kernel_addr && kernel_end_addr - kernel_addr > kernel_length) {
+    kernel_length = kernel_end_addr - kernel_addr;
+  }
+
+  mem_set_range(kernel_addr, kernel_length, true);
   mem_set_range(0, 0x100000, true); // ? first 1mb (real mode stuff)
 }
 
@@ -76,13 +89,14 @@ uint32_t pmm_alloc_frame(void) {
       return frame * FRAME_SIZE;
     }
   }
+
   return 0;
 }
-
+// ! TOFIX: i dont know why but its buggy
 uint32_t pmm_alloc_empty_frame(void) {
   uint32_t addr = pmm_alloc_frame();
   if (addr != 0) {
-    memset((void *)(uint32_t)addr, 0, FRAME_SIZE);
+    memset((void *)addr, 0, FRAME_SIZE);
     return addr;
   }
   return 0;

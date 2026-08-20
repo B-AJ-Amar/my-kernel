@@ -109,11 +109,12 @@ concatinate:
 
 run:
 	qemu-system-x86_64 \
-		-drive file=$(DISK_IMG),format=raw
+		-drive file=$(DISK_IMG),format=raw -m 4G # add 4gb mem for qemu	
 
 debug:
 	qemu-system-x86_64 \
 		-drive file=$(DISK_IMG),format=raw \
+		-m 4G \ 
 		-S \
 		-gdb tcp::1234
 
