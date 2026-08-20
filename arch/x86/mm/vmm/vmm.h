@@ -15,6 +15,13 @@
 #define PAGE_ENTRIES 1024
 #define PAGE_SIZE 4096
 
+#define KERNEL_SPACE_BASE 0xC0000000
+#define KERNEL_SPACE_END 0xFFFFFFFF
+#define KERNEL_SPACE_SIZE (KERNEL_SPACE_END - KERNEL_SPACE_BASE + 1)
+#define USER_SPACE_BASE 0x00001000
+#define USER_SPACE_END 0xBFFFFFFF
+#define USER_SPACE_SIZE (USER_SPACE_END - USER_SPACE_BASE + 1)
+
 // ? https://wiki.osdev.org/X86_Paging
 
 typedef uint32_t pde_t;
@@ -29,5 +36,10 @@ typedef struct {
 } page_table_t;
 
 void vmm_init(void);
+uint32_t vmm_get_physical_addr(uint32_t virtual_addr);
+void vmm_map_page(uint32_t virtual_addr, uint32_t physical_addr, uint32_t flags);
+void vmm_unmap_page(uint32_t virtual_addr);
+uint32_t vmm_alloc_user_page(void);
+uint32_t vmm_alloc_kernel_page(void);
 
 #endif

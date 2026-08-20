@@ -14,5 +14,6 @@ void hlt();
 void lidt(void *idt_ptr);
 void enable_interrupts(void);
 void disable_interrupts(void);
+uint32_t get_cr2(void);
 
 #endif

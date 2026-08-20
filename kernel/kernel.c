@@ -7,12 +7,12 @@
 #include <io.h>
 #include <kernel/console.h>
 #include <kernel/tty.h>
-#include <pmm/boot_info.h>
-#include <pmm/pmm.h>
+#include <mm/pmm/boot_info.h>
+#include <mm/pmm/pmm.h>
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
-#include <vmm/vmm.h>
+#include <mm/vmm/vmm.h>
 
 __attribute__((section(".start"))) void kernel(void) {
 
