@@ -1,3 +1,38 @@
+## [0.2.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.1.0...v0.2.0) (2026-08-21)
+
+### Features
+
+* add clear screen function ([6df9d98](https://github.com/B-AJ-Amar/my-kernel/commit/6df9d98187d529079474f106fa46b2f98b359a32))
+* add vmm h ([c9a64e2](https://github.com/B-AJ-Amar/my-kernel/commit/c9a64e2d1f61bfbfa2f9719bae45a9ffac2eaf18))
+* add vmm init ([f118bfe](https://github.com/B-AJ-Amar/my-kernel/commit/f118bfe71830f6cdd938f4ea974670a38f5d6557))
+* **memory:** add physical memory handling ([5b8a6b5](https://github.com/B-AJ-Amar/my-kernel/commit/5b8a6b509db2c8850402c5531b88398136f5423b))
+* **memory:** implement heap management functions and memory initialization ([d12e3aa](https://github.com/B-AJ-Amar/my-kernel/commit/d12e3aa7d57a9ddbdf23d19bde4c33c2649c1894))
+* **memory:** implement memory management functions ([a44d586](https://github.com/B-AJ-Amar/my-kernel/commit/a44d5863931984f17261c2ab789ab4b87a30eae3))
+* **pmm:** add asm memor ([3893432](https://github.com/B-AJ-Amar/my-kernel/commit/3893432cbf121a9c23dc505f03526aee29f91ff7))
+* **print:** add %llx  support ([71dc55e](https://github.com/B-AJ-Amar/my-kernel/commit/71dc55e1cc47e5c288e90f7c952f86e157996d6e))
+* send boot infos to the kernel ([a63127d](https://github.com/B-AJ-Amar/my-kernel/commit/a63127d3ced2a8ce28054b5b317087afb1d46f47))
+
+### Bug Fixes
+
+* calculate kernel real size + fix vmm ([7ff22ee](https://github.com/B-AJ-Amar/my-kernel/commit/7ff22ee54752a1fc19219a8645fecae0e149de4a))
+* include string.h for memset usage in heap.c ([6bb1990](https://github.com/B-AJ-Amar/my-kernel/commit/6bb1990a2ef50dda426b3e1b6d5900005cfbe8c7))
+* memory detection ([c3115ca](https://github.com/B-AJ-Amar/my-kernel/commit/c3115cac7d7c5a464ca3bda9abc8a1050f28df33))
+
+### Refactoring
+
+* file structure ([adad8f0](https://github.com/B-AJ-Amar/my-kernel/commit/adad8f0473eef9112e292fa07398281f651791ba))
+* **files:** memory/ -> pmm/ ([0825408](https://github.com/B-AJ-Amar/my-kernel/commit/082540820efbb7576c338e333d6d3c946ec73873))
+* inhance kernel size detection ([d38cd64](https://github.com/B-AJ-Amar/my-kernel/commit/d38cd64a1fb71e4427b6c90c89554d987396c3d8))
+* simplify code strucuture + remove the usless scripts ([56535c3](https://github.com/B-AJ-Amar/my-kernel/commit/56535c32838f8f6594730d2efb1737979e9e928f))
+* **timer:** 32 ->64 ([2b1128c](https://github.com/B-AJ-Amar/my-kernel/commit/2b1128cd996f5cfd5690ea7ede735de13abcb474))
+
+### Internal
+
+* fmt ([7dc9eb0](https://github.com/B-AJ-Amar/my-kernel/commit/7dc9eb0d4664ca71911963c07bdfce2db10a8ce5))
+* fmt ([6864f25](https://github.com/B-AJ-Amar/my-kernel/commit/6864f25287a4cfd6f2b888950e6c99250a4801e0))
+* fmt ([15737b5](https://github.com/B-AJ-Amar/my-kernel/commit/15737b5debfb91127e436d786b1de8e044a5c2c2))
+* update readme ([8080dbc](https://github.com/B-AJ-Amar/my-kernel/commit/8080dbc286a0b8d10af68c848d6a773cc3ab4825))
+
 ## [0.1.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.0.0...v0.1.0) (2026-08-03)
 
 ### Features
