@@ -9,8 +9,6 @@ The goal of this project is to understand how operating systems work by implemen
 
 Requirements:
 
-* NASM
-* i686-elf GCC cross-compiler
 * GNU Make
 * QEMU
 * Docker
@@ -24,7 +22,7 @@ make build
 Run:
 
 ```bash
-make run
+make run # or make rb (run and build)
 ```
 
 Debug:

@@ -3,6 +3,12 @@
 #define PMM_H
 
 #include <stdint.h>
+
+#define FRAME_SIZE 4096
+#define MAX_PHYS_MEMORY 0x100000000ULL
+#define MAX_FRAMES (MAX_PHYS_MEMORY / FRAME_SIZE)
+#define BITMAP_SIZE (MAX_FRAMES / 8)
+
 #define E820_MAX_ENTRIES 128
 #define E820_TYPE_USABLE 1
 #define E820_TYPE_RESERVED 2

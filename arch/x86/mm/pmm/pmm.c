@@ -4,11 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FRAME_SIZE 4096
-#define MAX_PHYS_MEMORY 0x100000000ULL
-#define MAX_FRAMES (MAX_PHYS_MEMORY / FRAME_SIZE)
-#define BITMAP_SIZE (MAX_FRAMES / 8)
-
 static void mem_set_range(uint64_t base, uint64_t length, bool is_reserved);
 static void bitmap_set_range(uint32_t start_frame, uint32_t num_frames,
                              bool is_reserved);

@@ -3,7 +3,7 @@
 
 #define BOOT_INFO_ADDR 0x7000
 
-typedef struct {
+typedef struct boot_info_t {
   uint32_t kernel_addr;
   uint32_t kernel_size;
   uint32_t e820_entries_count;
