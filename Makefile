@@ -1,16 +1,17 @@
-.PHONY: all build docker-build build-local build-kernel build-boot build-boot-elf \
-        concatinate run debug clean format
+.PHONY: all build build-ci docker-build docker-build-ci build-local \
+        build-kernel build-boot build-boot-elf concatinate run debug \
+        clean format fmt dbg gdb
 
 ARCH := x86
 
-CFLAGS := -g -ffreestanding -m32 -Iinclude -Iarch/$(ARCH)/include -nostdlib
+CFLAGS := -g -ffreestanding -m32 -I. -Iinclude -Iarch/$(ARCH)
+LDFLAGS := -m32 -ffreestanding -nostdlib -T kernel/linker.ld
 
 BUILD_DIR := build
 BIN_DIR := bin
 
-
 C_SRCS := $(shell find kernel drivers lib arch -name '*.c')
-ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -name 'boot.asm')
+ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -path 'arch/*/boot/*')
 
 C_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SRCS))
 ASM_OBJS := $(patsubst %.asm,$(BUILD_DIR)/%_asm.o,$(ASM_SRCS))
@@ -35,30 +36,30 @@ format:
 			-exec clang-format -style=LLVM -i {} \; ; \
 	fi
 
-%:
-	@:
-
 fmt: format
 
+f: format
 
-build-ci: docker-build-ci
+br: build run
 
 build: docker-build
 
-docker-build-ci:
+build-ci: docker-build-ci
+
+docker-build:
 	docker run --rm \
-		--user "$(id -u):$(id -g)" \
+		--user "$(shell id -u):$(shell id -g)" \
 		-v "$(PWD):/workspace" \
 		-w /workspace \
 		ghcr.io/b-aj-amar/kernel-builder:latest \
 		make build-local
 
-docker-build:
+docker-build-ci:
 	docker run --rm \
-		--user "$(id -u):$(id -g)" \
+		--user "$(shell id -u):$(shell id -g)" \
 		-v "$(PWD):/workspace" \
 		-w /workspace \
-		kernel-builder \
+		ghcr.io/b-aj-amar/kernel-builder:latest \
 		make build-local
 
 build-local: clean build-kernel build-boot build-boot-elf concatinate
@@ -66,7 +67,6 @@ build-local: clean build-kernel build-boot build-boot-elf concatinate
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	i686-elf-gcc $(CFLAGS) -c $< -o $@
-
 
 
 $(BUILD_DIR)/%_asm.o: %.asm
@@ -78,11 +78,11 @@ $(BUILD_DIR)/%_asm.o: %.asm
 build-kernel: $(KERNEL_OBJS)
 	@mkdir -p $(BUILD_DIR) $(BIN_DIR)
 
-	i686-elf-ld \
-		-m elf_i386 \
-		-T kernel/linker.ld \
+	i686-elf-gcc \
+		$(LDFLAGS) \
 		-o $(KERNEL_ELF) \
-		$(KERNEL_OBJS)
+		$(KERNEL_OBJS) \
+		-lgcc
 
 	i686-elf-objcopy \
 		-O binary \
@@ -94,26 +94,29 @@ build-kernel: $(KERNEL_OBJS)
 build-boot:
 	@mkdir -p $(BIN_DIR)
 	./scripts/kernel-size.sh $(ARCH)
-	nasm -f bin arch/$(ARCH)/boot.asm -o $(BOOT_BIN)
+	nasm -f bin -I arch/$(ARCH)/boot/ arch/$(ARCH)/boot/boot.asm -o $(BOOT_BIN)
 
 build-boot-elf:
 	@mkdir -p $(BUILD_DIR)
-	nasm -f elf32 -DELF_BUILD arch/$(ARCH)/boot.asm -o $(BOOT_ELF)
-
+	nasm -f elf32 -DELF_BUILD -I arch/$(ARCH)/boot/ \
+		arch/$(ARCH)/boot/boot.asm \
+		-o $(BOOT_ELF)
 
 
 concatinate:
+	@mkdir -p $(BIN_DIR)
 	cat $(BOOT_BIN) $(KERNEL_BIN) > $(DISK_IMG)
-
 
 run:
 	qemu-system-x86_64 \
-		-drive file=$(DISK_IMG),format=raw
+		-drive file=$(DISK_IMG),format=raw -m 4G # add 4gb mem for qemu	
 
 debug:
 	qemu-system-x86_64 \
 		-drive file=$(DISK_IMG),format=raw \
-		-S -gdb tcp::1234
+		-m 4G \ 
+		-S \
+		-gdb tcp::1234
 
 dbg: debug
 

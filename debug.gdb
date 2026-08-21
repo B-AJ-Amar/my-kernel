@@ -7,14 +7,14 @@ file build/kernel.elf
 add-symbol-file build/boot.o 0x7c00
 
 # Breakpoints
+break detect_memory
+break detect_memory.next
+break detect_memory.end
+break detect_memory.failed
+break detect_memory.too_many
 break kernel_switch
 break kernel
 
-break enable_interrupts
-break vga_init
-break console_set
-break ps2_init
-break printf
 
 # Optional pwndbg settings
 #context

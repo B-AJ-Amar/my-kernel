@@ -1,7 +1,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include <idt.h>
+#include <interupts/idt.h>
 #include <stdint.h>
 
 #define KERNEL_CS 0x8
@@ -14,5 +14,6 @@ void hlt();
 void lidt(void *idt_ptr);
 void enable_interrupts(void);
 void disable_interrupts(void);
+uint32_t get_cr2(void);
 
 #endif

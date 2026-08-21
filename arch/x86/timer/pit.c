@@ -1,13 +1,13 @@
 #include <io.h>
-#include <pit.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <timer/pit.h>
 
-static uint32_t pit_ticks, pit_frequency;
+static uint64_t pit_ticks, pit_frequency;
 
 void pit_init(uint32_t frequency) {
   pit_ticks = 0;
-  uint32_t divisor = PIT_DEFAULT_FREQUENCY / frequency;
+  uint64_t divisor = PIT_DEFAULT_FREQUENCY / frequency;
   pit_frequency = frequency;
 
   //
@@ -20,8 +20,8 @@ void pit_init(uint32_t frequency) {
 void pit_interrupt_handler(void) { pit_ticks++; }
 
 void pit_wait(uint32_t ms) {
-  uint32_t start_ticks = pit_ticks;
-  uint32_t wait_ticks = (pit_frequency * ms) / 1000;
+  uint64_t start_ticks = pit_ticks;
+  uint64_t wait_ticks = (pit_frequency * ms) / 1000;
 
   while ((pit_ticks - start_ticks) < wait_ticks) {
   }; // todo: use scheduler to avoid busy waiting

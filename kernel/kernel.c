@@ -2,14 +2,17 @@
 #include <drivers/keyboard/layout.h>
 #include <drivers/ps2/controller.h>
 #include <drivers/vga/vga.h>
-#include <idt.h>
+#include <interupts/idt.h>
+#include <interupts/pic.h>
 #include <io.h>
 #include <kernel/console.h>
 #include <kernel/tty.h>
-#include <pic.h>
-#include <pit.h>
+#include <mm/heap/heap.h>
+#include <mm/mm.h>
+#include <mm/pmm/boot_info.h>
 #include <sleep.h>
 #include <stdio.h>
+#include <timer/pit.h>
 __attribute__((section(".start"))) void kernel(void) {
 
   disable_interrupts();
@@ -28,6 +31,13 @@ __attribute__((section(".start"))) void kernel(void) {
 
   enable_interrupts();
 
+  boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
+  init_mm(boot);
+
+  uint32_t array = kmalloc(100);
+  kfree(array);
+
+  printf("kernel address: 0x%x\n", boot->kernel_addr);
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
