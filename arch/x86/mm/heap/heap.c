@@ -2,6 +2,7 @@
 #include <mm/heap/heap.h>
 #include <mm/vmm/vmm.h>
 #include <stddef.h>
+#include <string.h>
 
 static heap_block_t *kernel_heap_head = NULL;
 
