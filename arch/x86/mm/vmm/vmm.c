@@ -119,7 +119,7 @@ void vmm_unmap_page(uint32_t virtual_addr) {
 }
 
 uint32_t vmm_alloc_page(void) {
-  uint32_t physical_addr = pmm_alloc_empty_frame();
+  uint32_t physical_addr = pmm_alloc_frame();
   if (physical_addr == 0) {
     return 0;
   }
@@ -133,7 +133,7 @@ static void _decode_virtual_addr(uint32_t virtual_addr, uint32_t *dir_idx,
 }
 
 uint32_t vmm_alloc_user_page(void) {
-  uint32_t physical_addr = pmm_alloc_empty_frame();
+  uint32_t physical_addr = pmm_alloc_frame();
   if (physical_addr == 0) {
     return 0;
   }

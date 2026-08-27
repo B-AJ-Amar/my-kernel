@@ -34,7 +34,7 @@ __attribute__((section(".start"))) void kernel(void) {
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   init_mm(boot);
 
-  uint32_t array = kmalloc(100);
+  uint32_t *array = (uint32_t *)kmalloc(100);
   kfree(array);
 
   printf("kernel address: 0x%x\n", boot->kernel_addr);

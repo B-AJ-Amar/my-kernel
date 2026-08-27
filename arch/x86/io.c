@@ -25,8 +25,13 @@ void lidt(void *idt_ptr) {
 void enable_interrupts(void) { __asm__ volatile("sti"); }
 void disable_interrupts(void) { __asm__ volatile("cli"); }
 
-uint32_t get_cr2(void) {
-  uint32_t cr2;
+uintptr_t get_cr2(void) {
+  uintptr_t cr2;
   __asm__ volatile("mov %%cr2, %0" : "=r"(cr2));
   return cr2;
+}
+uintptr_t get_cr3(void) {
+  uintptr_t cr3;
+  __asm__ volatile("mov %%cr3, %0" : "=r"(cr3));
+  return cr3;
 }

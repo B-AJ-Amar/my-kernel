@@ -2,6 +2,7 @@
 #include <mm/heap/heap.h>
 #include <mm/vmm/vmm.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 static heap_block_t *kernel_heap_head = NULL;
@@ -17,37 +18,37 @@ void k_heap_init(void) {
 
 static uint32_t create_block(uint32_t size, heap_block_t *heap_head,
                              uint32_t (*alloc_pages_to_heap)(uint32_t));
-static uint32_t free_block(uint32_t ptr, heap_block_t *heap_head);
+static uint32_t free_block(void* ptr, heap_block_t *heap_head);
 // first fit
-uint32_t kmalloc(uint32_t size) {
+void* kmalloc(uint32_t size) {
 
   if (size == 0 || size > KERNEL_HEAP_SIZE) {
-    return 0;
+    return NULL;
   }
 
-  return create_block(size, kernel_heap_head, vmm_alloc_kernel_heap_pages);
+  return (void *)create_block(size, kernel_heap_head, vmm_alloc_kernel_heap_pages);
 }
 
-uint32_t kfree(uint32_t ptr) { return free_block(ptr, kernel_heap_head); }
+void kfree(void* ptr) { free_block(ptr, kernel_heap_head); }
 
-uint32_t kcalloc(uint32_t num, uint32_t size) {
+void* kcalloc(uint32_t num, uint32_t size) {
   uint32_t total_size = num * size;
-  uint32_t ptr = kmalloc(total_size);
+  uintptr_t ptr = (uintptr_t)kmalloc(total_size);
   if (ptr == 0) {
-    return 0;
+    return NULL;
   }
   memset((void *)ptr, 0, total_size);
-  return ptr;
+  return (void *)ptr;
 }
 
-uint32_t krealloc(uint32_t ptr, uint32_t new_size) {
-  if (ptr == 0) {
+void* krealloc(void *ptr, uint32_t new_size) {
+  if (ptr == NULL) {
     return kmalloc(new_size);
   }
 
   if (new_size == 0) {
     kfree(ptr);
-    return 0;
+    return NULL;
   }
 
   heap_block_t *block = (heap_block_t *)(ptr - sizeof(heap_block_t));
@@ -57,15 +58,15 @@ uint32_t krealloc(uint32_t ptr, uint32_t new_size) {
     return ptr;
   }
 
-  uint32_t new_ptr = kmalloc(new_size);
+  uintptr_t new_ptr = (uintptr_t)kmalloc(new_size);
   if (new_ptr == 0) {
-    return 0;
+    return NULL;
   }
 
   memcpy((void *)new_ptr, (void *)ptr, old_size);
   kfree(ptr);
 
-  return new_ptr;
+  return (void *)new_ptr;
 }
 
 uint32_t create_block(uint32_t size, heap_block_t *heap_head,
@@ -124,8 +125,8 @@ uint32_t create_block(uint32_t size, heap_block_t *heap_head,
   return 0;
 }
 
-uint32_t free_block(uint32_t ptr, heap_block_t *heap_head) {
-  if (ptr == 0) {
+uint32_t free_block(void *ptr, heap_block_t *heap_head) {
+  if (ptr == NULL) {
     return 0;
   }
 
