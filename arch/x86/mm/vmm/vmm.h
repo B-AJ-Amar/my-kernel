@@ -3,7 +3,7 @@
 #define VMM_H
 #include <mm/mm.h>
 #include <stdint.h>
-
+#include <stdbool.h>  
 // ? https://wiki.osdev.org/X86_Paging
 
 typedef uint32_t pde_t;
@@ -29,5 +29,6 @@ uint32_t vmm_alloc_user_pages(uint32_t);
 uint32_t vmm_alloc_kernel_pages(uint32_t);
 uint32_t vmm_alloc_kernel_heap_pages(uint32_t);
 uint32_t vmm_get_needed_pages(uint64_t bytes);
+bool vmm_test_if_mapped(uint32_t virtual_addr);
 
 #endif

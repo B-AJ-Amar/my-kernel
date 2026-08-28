@@ -4,6 +4,8 @@
 #include <mm/vmm/vmm.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
 // TODO: add page fault handling
 uint32_t get_pages_count(uint32_t size);
 static void enable_paging(uint32_t page_dir);
@@ -197,7 +199,7 @@ uint32_t vmm_alloc_pages(uint32_t from, uint32_t to, uint32_t count,
   virtual_addr -= vpages_count * PAGE_SIZE;
   uint32_t frames[vpages_count];
   for (int i = 0; i < vpages_count; i++) {
-    uint32_t physical_addr = pmm_alloc_empty_frame();
+    uint32_t physical_addr = pmm_alloc_frame();
     if (physical_addr == 0) {
       for (int j = 0; j < i; j++) {
         pmm_free_frame(frames[j]);
@@ -235,4 +237,8 @@ uint32_t vmm_get_needed_pages(uint64_t bytes) {
 
 uint32_t vmm_get_page_offset(uint32_t virtual_addr) {
   return virtual_addr & 0xFFF;
+}
+
+bool vmm_test_if_mapped(uint32_t virtual_addr) {
+  return vmm_get_physical_addr(virtual_addr) != 0;
 }
