@@ -1,7 +1,6 @@
 #include <drivers/keyboard/keyboard.h>
 #include <interupts/irq.h>
 #include <interupts/pic.h>
-#include <io.h>
 #include <stdio.h>
 #include <timer/pit.h>
 // TODO: keyboard+ time drivers

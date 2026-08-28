@@ -1,6 +1,6 @@
+#include <asm.h>
 #include <interupts/interupt.h>
 #include <interupts/isr.h>
-#include <io.h>
 #include <stdio.h>
 
 const char *exception_names[32] = {"Divide Error",

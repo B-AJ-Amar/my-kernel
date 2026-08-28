@@ -14,10 +14,10 @@ typedef struct heap_block_t {
 } heap_block_t;
 
 void k_heap_init(void);
-void* kmalloc(uint32_t size);
-void kfree(void* ptr);
+void *kmalloc(uint32_t size);
+void kfree(void *ptr);
 
-void* kcalloc(uint32_t num, uint32_t size);
-void* krealloc(void *ptr, uint32_t new_size);
+void *kcalloc(uint32_t num, uint32_t size);
+void *krealloc(void *ptr, uint32_t new_size);
 
 #endif

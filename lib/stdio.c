@@ -1,4 +1,4 @@
-#include <io.h>
+#include <asm.h>
 #include <kernel/console.h>
 #include <stdarg.h>
 #include <stddef.h>

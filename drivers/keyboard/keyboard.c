@@ -16,7 +16,7 @@ static keyboard_state_t current_state = {0};
 static keyboard_driver_t *current_driver;
 static keyboard_event_queue event_queue;
 // todo: add available layouts array to make crtl + alt to change the layouts
-void init_keyboard(kb_backend_t backend, const keyboard_layout_t *layout) {
+void keyboard_init(kb_backend_t backend, const keyboard_layout_t *layout) {
   current_state.left_shift = false;
   current_state.right_shift = false;
   current_state.left_ctrl = false;

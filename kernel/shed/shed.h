@@ -4,19 +4,23 @@
 #include <stdint.h>
 
 typedef enum {
-    PROCESS_READY,
-    PROCESS_RUNNING,
-    PROCESS_BLOCKED
+  PROCESS_READY,
+  PROCESS_RUNNING,
+  PROCESS_BLOCKED
 } process_state_t;
 
-typedef struct process_t{
-    uint32_t pid;
-    process_state_t state;
-    uint32_t *stack;
-    uint32_t *page_directory;
-    struct process_t *next;
-} process_t;
+typedef struct thread_t {
+  uint32_t tid;
 
+  process_state_t state;
+
+  uintptr_t stack;
+
+  struct thread_t *next;
+} thread_t;
 
 void shed_init(void);
+void task_create(void(*task), void *params);
+void task_delay(uint64_t ms);
+int task_exit(int code);
 #endif

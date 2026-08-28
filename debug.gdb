@@ -7,13 +7,12 @@ file build/kernel.elf
 add-symbol-file build/boot.o 0x7c00
 
 # Breakpoints
-break detect_memory
-break detect_memory.next
-break detect_memory.end
-break detect_memory.failed
-break detect_memory.too_many
+
 break kernel_switch
 break kernel
+break mm_init
+break pmm_init
+break vmm_init
 
 
 # Optional pwndbg settings

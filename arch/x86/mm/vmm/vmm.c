@@ -10,7 +10,12 @@ static void enable_paging(uint32_t page_dir);
 static void _decode_virtual_addr(uint32_t virtual_addr, uint32_t *dir_idx,
                                  uint32_t *table_idx, uint32_t *offset);
 static page_directory_t *kernel_page_dir;
+/*
+PT: each page tale holds 1024 entries each entry points to 4kb page, so each
+page table can map 4mb of memory PDT: 1024 entries so each page directory can
+map 4gb of memory
 
+*/
 void vmm_init(void) {
   uint32_t page_dir = pmm_alloc_empty_frame();
   uint32_t table_frame = pmm_alloc_empty_frame();
@@ -32,6 +37,24 @@ void vmm_init(void) {
 
   kernel_page_dir->entries[0] =
       (table_frame & 0xFFFFF000) | PAGE_F_PRESENT | PAGE_F_WRITABLE;
+
+  // ? mape the stack addr from KERNEL_RM_SP to 0xFFFFFFFF
+  page_table_t *kernel_stack_table = (page_table_t *)pmm_alloc_empty_frame();
+  if (kernel_stack_table == NULL) {
+    panic("Failed to allocate memory for kernel stack page table");
+  }
+
+  uintptr_t kernel_stack_frame = pmm_alloc_specific_frame(KERNEL_RM_SP);
+  if (kernel_stack_frame == 0) {
+    panic("Failed to allocate memory for kernel stack frame");
+  }
+
+  kernel_stack_table->entries[1023] =
+      (kernel_stack_frame & 0xFFFFF000) | PAGE_F_PRESENT | PAGE_F_WRITABLE;
+
+  kernel_page_dir->entries[1023] =
+      ((uintptr_t)kernel_stack_table & 0xFFFFF000) | PAGE_F_PRESENT |
+      PAGE_F_WRITABLE;
 
   asm volatile("cli");
   enable_paging(page_dir);

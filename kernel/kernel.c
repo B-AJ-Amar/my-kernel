@@ -1,11 +1,12 @@
+#include <asm.h>
 #include <drivers/keyboard/keyboard.h>
 #include <drivers/keyboard/layout.h>
 #include <drivers/ps2/controller.h>
 #include <drivers/vga/vga.h>
 #include <interupts/idt.h>
 #include <interupts/pic.h>
-#include <io.h>
 #include <kernel/console.h>
+#include <kernel/shed/shed.h>
 #include <kernel/tty.h>
 #include <mm/heap/heap.h>
 #include <mm/mm.h>
@@ -13,10 +14,11 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
+
 __attribute__((section(".start"))) void kernel(void) {
 
   disable_interrupts();
-  init_idt();
+  idt_init();
   pic_init();
 
   pit_init(PIT_FREQUENCY);
@@ -25,14 +27,16 @@ __attribute__((section(".start"))) void kernel(void) {
   console_set(&vga_console);
 
   ps2_init();
-  init_keyboard(KB_BACKEND_PS2, &layout_us);
+  keyboard_init(KB_BACKEND_PS2, &layout_us);
 
   tty_init(local_keyboard_input, local_console_output);
 
   enable_interrupts();
 
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
-  init_mm(boot);
+  mm_init(boot);
+
+  // shed_init();
 
   uint32_t *array = (uint32_t *)kmalloc(100);
   kfree(array);

@@ -4,17 +4,8 @@
 #include <interupts/idt.h>
 #include <stdint.h>
 
-#define KERNEL_CS 0x8
-#define KERNEL_DS 0x10
-
+// TODO: move the helpers into asm.c
 void outb(uint16_t port, uint8_t value);
 uint8_t inb(uint16_t port);
-
-void hlt();
-void lidt(void *idt_ptr);
-void enable_interrupts(void);
-void disable_interrupts(void);
-uintptr_t get_cr2(void);
-uintptr_t get_cr3(void);
 
 #endif

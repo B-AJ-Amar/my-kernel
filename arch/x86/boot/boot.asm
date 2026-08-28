@@ -14,6 +14,9 @@ STACK_PTR equ 0x8000
 KERNEL_ADDR_RM equ 0x1000
 KERNEL_ADDR_PM equ 0x100000
 
+KERNEL_RM_SP equ 0x90000
+; KERNEL_RM_SP equ 0x5FFFFF
+
 ; this will be updated by the build script
 KERNEL_SIZE equ 21472
 KERNEL_SECTORS equ 42
@@ -62,7 +65,7 @@ start_protected_mode:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    mov esp, 0x90000
+    mov esp, KERNEL_RM_SP
 
     mov ebx, 0xB8000
     mov esi, msg
@@ -88,6 +91,7 @@ boot_info:
     mov dword [BOOT_INFO_ADDR + 12], E820_ENTRIES_ADDR
     mov dword [BOOT_INFO_ADDR + 16], E820_MAX_ENTRIES
     mov dword [BOOT_INFO_ADDR + 20], E820_ENTRY_SIZE
+    mov dword [BOOT_INFO_ADDR + 24], KERNEL_RM_SP
     
 
 print:

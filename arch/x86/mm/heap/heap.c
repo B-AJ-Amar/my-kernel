@@ -18,20 +18,21 @@ void k_heap_init(void) {
 
 static uint32_t create_block(uint32_t size, heap_block_t *heap_head,
                              uint32_t (*alloc_pages_to_heap)(uint32_t));
-static uint32_t free_block(void* ptr, heap_block_t *heap_head);
+static uint32_t free_block(void *ptr, heap_block_t *heap_head);
 // first fit
-void* kmalloc(uint32_t size) {
+void *kmalloc(uint32_t size) {
 
   if (size == 0 || size > KERNEL_HEAP_SIZE) {
     return NULL;
   }
 
-  return (void *)create_block(size, kernel_heap_head, vmm_alloc_kernel_heap_pages);
+  return (void *)create_block(size, kernel_heap_head,
+                              vmm_alloc_kernel_heap_pages);
 }
 
-void kfree(void* ptr) { free_block(ptr, kernel_heap_head); }
+void kfree(void *ptr) { free_block(ptr, kernel_heap_head); }
 
-void* kcalloc(uint32_t num, uint32_t size) {
+void *kcalloc(uint32_t num, uint32_t size) {
   uint32_t total_size = num * size;
   uintptr_t ptr = (uintptr_t)kmalloc(total_size);
   if (ptr == 0) {
@@ -41,7 +42,7 @@ void* kcalloc(uint32_t num, uint32_t size) {
   return (void *)ptr;
 }
 
-void* krealloc(void *ptr, uint32_t new_size) {
+void *krealloc(void *ptr, uint32_t new_size) {
   if (ptr == NULL) {
     return kmalloc(new_size);
   }

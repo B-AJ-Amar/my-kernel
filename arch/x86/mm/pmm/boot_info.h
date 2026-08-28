@@ -10,4 +10,5 @@ typedef struct boot_info_t {
   uint32_t e820_entries_addr;
   uint32_t e820_max_entries;
   uint32_t e820_entry_size;
+  uint32_t kernel_stack_pointer;
 } boot_info_t;

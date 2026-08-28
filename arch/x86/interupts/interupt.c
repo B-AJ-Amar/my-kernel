@@ -2,7 +2,6 @@
 #include <interupts/interupt.h>
 #include <interupts/irq.h>
 #include <interupts/isr.h>
-#include <io.h>
 #include <stdio.h>
 
 // https://wiki.osdev.org/Exceptions
