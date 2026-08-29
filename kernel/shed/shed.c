@@ -17,6 +17,7 @@ static uintptr_t current_stack_offset =
     KERNEL_STACK_SIZE; // reserv the first part for the main kernel thread
 
 static void task_insert(thread_t *current, thread_t *task);
+static int task_delete(thread_t *task);
 static uintptr_t task_alloc_stack();
 
 void shed_init(void) {
@@ -38,6 +39,8 @@ thread_t *task_create(void (*entry)(void *), void *params) {
   task->state = THREAD_READY;
 
   task->sp = task_alloc_stack();
+
+  push_int_context(task->sp, params, entry);
 
   task_insert(current_task, task);
 
@@ -81,6 +84,29 @@ void task_insert(thread_t *current, thread_t *task) {
   current->next = task;
 }
 
+int task_exit(int code) {
+  if (current_task == NULL)
+    return -1;
+  task_delete(current_task);
+  return 0;
+}
+
+int task_delete(thread_t *task) {
+  if (task == NULL)
+    return -1;
+
+  if (task->prev != NULL)
+    task->prev->next = task->next;
+  else
+    tasks = task->next;
+
+  if (task->next != NULL)
+    task->next->prev = task->prev;
+
+  kfree(task);
+  return 0;
+}
+
 uintptr_t task_alloc_stack() {
 
   uintptr_t stack_addr = current_stack_offset;
@@ -92,8 +118,12 @@ uintptr_t task_alloc_stack() {
     if (vaddr == 0)
       panic("Failed to allocate stack for new task");
   }
-  // TODO add the interupt pushed things to the stackstack things
-  // (IP,FLAGS,CS,SS,DS,ES,FS,GS) to the stack
-  //  return stack - pushed things
+
   return stack_addr;
+}
+
+// ? i need this in case of the task returns
+void task_wrapper(void (*entry)(void *), void *params) {
+  entry(params);
+  task_exit(0);
 }
