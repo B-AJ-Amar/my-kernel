@@ -2,8 +2,8 @@
 #ifndef VMM_H
 #define VMM_H
 #include <mm/mm.h>
+#include <stdbool.h>
 #include <stdint.h>
-#include <stdbool.h>  
 // ? https://wiki.osdev.org/X86_Paging
 
 typedef uint32_t pde_t;

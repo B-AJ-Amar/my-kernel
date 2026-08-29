@@ -2,10 +2,10 @@
 
 #include <mm/pmm/pmm.h>
 #include <mm/vmm/vmm.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
 // TODO: add page fault handling
 uint32_t get_pages_count(uint32_t size);
 static void enable_paging(uint32_t page_dir);
