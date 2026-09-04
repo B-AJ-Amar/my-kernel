@@ -18,7 +18,7 @@ page table can map 4mb of memory PDT: 1024 entries so each page directory can
 map 4gb of memory
 
 */
-void vmm_init(void) {
+void vmm_init(uintptr_t kernel_stack_pointer) {
   uint32_t page_dir = pmm_alloc_empty_frame();
   uint32_t table_frame = pmm_alloc_empty_frame();
 
@@ -45,8 +45,8 @@ void vmm_init(void) {
   if (kernel_stack_table == NULL) {
     panic("Failed to allocate memory for kernel stack page table");
   }
-
-  uintptr_t kernel_stack_frame = pmm_alloc_specific_frame(KERNEL_RM_SP);
+  pmm_free_frame(kernel_stack_pointer); // tofix: quick fix ;)  i will find a btter fix later
+  uintptr_t kernel_stack_frame = pmm_alloc_specific_frame(kernel_stack_pointer);
   if (kernel_stack_frame == 0) {
     panic("Failed to allocate memory for kernel stack frame");
   }

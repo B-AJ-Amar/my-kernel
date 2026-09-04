@@ -51,7 +51,7 @@ push_int_context:
     mov ecx, [esp + 12] ; eip
     mov [eax-8], ecx ; entry
     xor ecx, ecx
-    mov [eax-12], ecx ; fake reutn to keep the structure of the call correct, i dont think that wiill be needed anyway (the theread wll be deleted in task_exit()
+    mov [eax-12], ecx ; fake return to keep the structure of the call correct, i dont think that wiill be needed anyway (the theread wll be deleted in task_exit()
     
     .thread_context:
     mov ecx, DEFAULT_EFLAGS

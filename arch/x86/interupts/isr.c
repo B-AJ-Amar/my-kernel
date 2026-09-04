@@ -40,7 +40,7 @@ void isr_handler(interupt_registers_t *regs) {
   // todo: add a better handler for page fault
   if (regs->int_no == 14) {
     uint32_t faulting_address = get_cr2();
-    panic("Exception %u:%u : Page Fault at address: 0x%x\n", regs->int_no,
+    panic("\033[4,0]Exception %u:%u : Page Fault at address: 0x%x\033[15,0]\n", regs->int_no,
           regs->err_code, faulting_address);
   }
   panic("Exception %u:%u : %s\n", regs->int_no, regs->err_code,

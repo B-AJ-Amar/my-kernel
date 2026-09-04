@@ -14,8 +14,7 @@ STACK_PTR equ 0x8000
 KERNEL_ADDR_RM equ 0x1000
 KERNEL_ADDR_PM equ 0x100000
 
-KERNEL_RM_SP equ 0x90000
-; KERNEL_RM_SP equ 0x5FFFFF
+KERNEL_RM_SP equ 0x9fff
 
 ; this will be updated by the build script
 KERNEL_SIZE equ 21472

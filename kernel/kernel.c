@@ -14,6 +14,7 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
+// #include <shed/shed.h>
 
 __attribute__((section(".start"))) void kernel(void) {
 
@@ -31,12 +32,14 @@ __attribute__((section(".start"))) void kernel(void) {
 
   tty_init(local_keyboard_input, local_console_output);
 
-  enable_interrupts();
-
+  
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot);
 
   // shed_init();
+
+  enable_interrupts();
+
 
   uint32_t *array = (uint32_t *)kmalloc(100);
   kfree(array);

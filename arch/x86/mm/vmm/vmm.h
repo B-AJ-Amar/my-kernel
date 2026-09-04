@@ -17,7 +17,7 @@ typedef struct {
   pte_t entries[PAGE_ENTRIES];
 } page_table_t;
 
-void vmm_init(void);
+void vmm_init(uintptr_t kernel_stack_pointer);
 uint32_t vmm_get_physical_addr(uint32_t virtual_addr);
 uint32_t vmm_get_page_offset(uint32_t virtual_addr);
 void vmm_map_page(uint32_t virtual_addr, uint32_t physical_addr,

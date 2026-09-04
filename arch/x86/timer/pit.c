@@ -2,8 +2,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <timer/pit.h>
+#include <kernel/shed/shed.h>
 
+// TODO:refactor this :keep only the arch spesific functions here
 static uint64_t pit_ticks, pit_frequency;
+static uint32_t current_shed_time = 0;
 
 void pit_init(uint32_t frequency) {
   pit_ticks = 0;
@@ -17,7 +20,15 @@ void pit_init(uint32_t frequency) {
   outb(PIT_CHANNEL0, (uint8_t)((divisor >> 8) & 0xFF)); // high
 }
 
-void pit_interrupt_handler(void) { pit_ticks++; }
+void pit_interrupt_handler(void) { 
+  pit_ticks++; 
+  current_shed_time++;
+
+  if (current_shed_time>=SHED_CONTEXT_TIME){
+    current_shed_time = 0;
+    schedule();
+  }
+}
 
 void pit_wait(uint32_t ms) {
   uint64_t start_ticks = pit_ticks;

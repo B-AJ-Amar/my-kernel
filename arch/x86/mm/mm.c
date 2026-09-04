@@ -7,6 +7,6 @@
 void mm_init(boot_info_t *boot) {
   pmm_init(boot->kernel_addr, boot->kernel_size, boot->e820_entries_count,
            boot->e820_entries_addr);
-  vmm_init();
+  vmm_init(boot->kernel_stack_pointer);
   k_heap_init();
 }

@@ -101,9 +101,7 @@ uint32_t pmm_alloc_empty_frame(void) {
 }
 
 void pmm_free_frame(uint32_t address) {
-  if (address % FRAME_SIZE != 0 || address >= MAX_PHYS_MEMORY) {
-    return; // Invalid address
-  }
+  address = address & ~(FRAME_SIZE - 1);
   uint32_t frame = address / FRAME_SIZE;
   bitmap_clear(frame);
 }
