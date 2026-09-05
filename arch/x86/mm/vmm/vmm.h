@@ -23,6 +23,7 @@ uint32_t vmm_get_page_offset(uint32_t virtual_addr);
 void vmm_map_page(uint32_t virtual_addr, uint32_t physical_addr,
                   uint32_t flags);
 void vmm_unmap_page(uint32_t virtual_addr);
+uintptr_t vmm_alloc_page(uintptr_t virtual_addr, uint32_t flags);
 uint32_t vmm_alloc_pages(uint32_t from, uint32_t to, uint32_t count,
                          uint32_t flags);
 uint32_t vmm_alloc_user_pages(uint32_t);

@@ -143,12 +143,6 @@ void vmm_unmap_page(uint32_t virtual_addr) {
   pmm_free_frame(page_table_entry & 0xFFFFF000);
 }
 
-uint32_t vmm_alloc_page(void) {
-  uint32_t physical_addr = pmm_alloc_frame();
-  if (physical_addr == 0) {
-    return 0;
-  }
-}
 
 static void _decode_virtual_addr(uint32_t virtual_addr, uint32_t *dir_idx,
                                  uint32_t *table_idx, uint32_t *offset) {
@@ -176,6 +170,16 @@ uint32_t vmm_alloc_user_page(void) {
   return 0;
 }
 
+uintptr_t vmm_alloc_page(uintptr_t virtual_addr, uint32_t flags) {
+  uint32_t physical_addr = pmm_alloc_frame();
+  if (physical_addr == 0) {
+    return 0;
+  }
+  virtual_addr = (virtual_addr / PAGE_SIZE) * PAGE_SIZE; 
+  vmm_map_page(virtual_addr, physical_addr, flags | PAGE_F_PRESENT);
+  return virtual_addr;
+}
+// ! TOFIX: its not realy important to have a continues phisical pages
 uint32_t vmm_alloc_pages(uint32_t from, uint32_t to, uint32_t count,
                          uint32_t flags) {
   if (!count)

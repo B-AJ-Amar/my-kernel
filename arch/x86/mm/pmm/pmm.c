@@ -90,7 +90,8 @@ uint32_t pmm_alloc_frame(void) {
 
   return 0;
 }
-// ! TOFIX: i dont know why but its buggy
+// ! TOFIX: i dont know why but its buggy 
+// ? edit: i think that i found the bug (pmm_alloc_frame return phisical addr but memset concider it as virtual addr)
 uint32_t pmm_alloc_empty_frame(void) {
   uint32_t addr = pmm_alloc_frame();
   if (addr != 0) {

@@ -92,6 +92,7 @@ uint32_t create_block(uint32_t size, heap_block_t *heap_head,
 
       return (uint32_t)(current + 1);
     }
+    current = current->next;
   }
   if (current->free && current->size >= size + sizeof(heap_block_t)) {
     uint32_t new_block_addr = (uint32_t)(current + 1) + size;
