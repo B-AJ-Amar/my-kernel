@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <timer/pit.h>
 #include <kernel/shed/shed.h>
+#include <stdio.h>
 
 // TODO:refactor this :keep only the arch spesific functions here
 static uint64_t pit_ticks, pit_frequency;
@@ -24,7 +25,13 @@ void pit_interrupt_handler(void) {
   pit_ticks++; 
   current_shed_time++;
 
+  thread_t *current = task_get_current();
   if (current_shed_time>=SHED_CONTEXT_TIME){
+    printf("\033[4,0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    printf("\033[4,0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    printf("\n%u\n", current->tid);
+    printf("\033[4,0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    printf("\033[4,0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\033[15,0]");
     current_shed_time = 0;
     schedule();
   }

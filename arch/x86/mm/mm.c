@@ -4,9 +4,9 @@
 #include <mm/pmm/pmm.h>
 #include <mm/vmm/vmm.h>
 
-void mm_init(boot_info_t *boot) {
+void mm_init(boot_info_t *boot, uintptr_t sp_top,uintptr_t sp_bottom) {
   pmm_init(boot->kernel_addr, boot->kernel_size, boot->e820_entries_count,
            boot->e820_entries_addr);
-  vmm_init(boot->kernel_stack_pointer);
+  vmm_init(sp_top,sp_bottom);
   k_heap_init();
 }

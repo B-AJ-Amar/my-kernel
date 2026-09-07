@@ -10,10 +10,12 @@ add-symbol-file build/boot.o 0x7c00
 
 break kernel_switch
 break kernel
-break mm_init
-break pmm_init
-break vmm_init
-
+break shed_init
+break switch_context
+break push_int_context
+break task_wrapper
+break task_create
+break schedule
 
 # Optional pwndbg settings
 #context

@@ -8,6 +8,7 @@ static void __irq_keyboard_handler__();
 static void __irq_timer_handler__();
 
 void irq_handler(interupt_registers_t *regs) {
+  pic_send_eoi(regs->int_no - PIC1_OFFSET); // end of interupt
   switch (regs->int_no) {
   case 33:
     __irq_keyboard_handler__();
@@ -18,7 +19,6 @@ void irq_handler(interupt_registers_t *regs) {
     break;
   }
 
-  pic_send_eoi(regs->int_no - PIC1_OFFSET); // end of interupt
 }
 
 static void __irq_keyboard_handler__() {

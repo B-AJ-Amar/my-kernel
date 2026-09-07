@@ -18,7 +18,17 @@ page table can map 4mb of memory PDT: 1024 entries so each page directory can
 map 4gb of memory
 
 */
-void vmm_init(uintptr_t kernel_stack_pointer) {
+void vmm_init(uintptr_t sp_top,uintptr_t sp_bottom) {
+  
+  // ? alloc stack frame before anty thing to avoid later conflicts
+  sp_top--;
+  uintptr_t stack_frames[(sp_top - sp_bottom) / PAGE_SIZE + 1];
+  uint32_t stack_frame_count = 0;
+  for (uintptr_t addr = sp_top; addr >= sp_bottom; addr -= PAGE_SIZE) {
+    stack_frames[stack_frame_count++] = pmm_alloc_specific_frame(addr);
+  }
+  
+  // ?make pdt/pt
   uint32_t page_dir = pmm_alloc_empty_frame();
   uint32_t table_frame = pmm_alloc_empty_frame();
 
@@ -42,18 +52,16 @@ void vmm_init(uintptr_t kernel_stack_pointer) {
 
   // ? mape the stack addr from KERNEL_RM_SP to 0xFFFFFFFF
   page_table_t *kernel_stack_table = (page_table_t *)pmm_alloc_empty_frame();
+  
   if (kernel_stack_table == NULL) {
     panic("Failed to allocate memory for kernel stack page table");
   }
-  pmm_free_frame(kernel_stack_pointer); // tofix: quick fix ;)  i will find a btter fix later
-  uintptr_t kernel_stack_frame = pmm_alloc_specific_frame(kernel_stack_pointer);
-  if (kernel_stack_frame == 0) {
-    panic("Failed to allocate memory for kernel stack frame");
+  
+  for (int i = 0; i < stack_frame_count; i++) {
+    kernel_stack_table->entries[1023 - i] =
+        (stack_frames[i] & 0xFFFFF000) | PAGE_F_PRESENT | PAGE_F_WRITABLE;
+
   }
-
-  kernel_stack_table->entries[1023] =
-      (kernel_stack_frame & 0xFFFFF000) | PAGE_F_PRESENT | PAGE_F_WRITABLE;
-
   kernel_page_dir->entries[1023] =
       ((uintptr_t)kernel_stack_table & 0xFFFFF000) | PAGE_F_PRESENT |
       PAGE_F_WRITABLE;

@@ -34,5 +34,5 @@
 #define KERNEL_HEAP_END 0xE0000000
 #define KERNEL_HEAP_SIZE (KERNEL_HEAP_END - KERNEL_HEAP_START) // 256mb
 
-void mm_init(boot_info_t *boot);
+void mm_init(boot_info_t *boot,uintptr_t sp_top,uintptr_t sp_bottom);
 #endif

@@ -39,11 +39,9 @@ thread_t *task_create(void (*entry)(void *), void *params) {
   task->state = THREAD_READY;
 
   task->sp = task_alloc_stack();
-
-  push_int_context(task->sp, params, entry);
+  task->sp = push_int_context(task->sp, params, entry);   // <-- capture the new sp
 
   task_insert(current_task, task);
-
   return task;
 }
 
@@ -66,7 +64,8 @@ void schedule(void) {
 
   thread_t *prev = current_task;
   current_task = next;
-
+  printf("switching from task %u to task %u\n", prev->tid, next->tid);
+  // ! TOIX: this function is buggy (INVALID OPCODE)
   switch_context(prev, next);
 }
 
@@ -84,11 +83,23 @@ void task_insert(thread_t *current, thread_t *task) {
   current->next = task;
 }
 
+__attribute__((noreturn))
 int task_exit(int code) {
   if (current_task == NULL)
     return -1;
-  task_delete(current_task);
-  return 0;
+
+  thread_t *next = current_task->next;
+  if (next == NULL)
+    next = tasks;
+  if (next == current_task)
+    panic("No more tasks to run"); // nothing left to schedule to
+
+  task_delete(current_task);       // unlink + free the dying task
+  next->state = THREAD_RUNNING;
+  current_task = next;
+
+  switch_to(next);
+
 }
 
 int task_delete(thread_t *task) {
@@ -111,19 +122,27 @@ uintptr_t task_alloc_stack() {
 
   uintptr_t stack_addr = current_stack_offset;
   current_stack_offset -= KERNEL_STACK_SIZE;
-  if (!vmm_test_if_mapped(stack_addr)) {
-    uint32_t vaddr = vmm_alloc_pages(current_stack_offset + 1, stack_addr,
-                                     KERNEL_STACK_SIZE_PAGES,
-                                     PAGE_F_PRESENT | PAGE_F_WRITABLE);
-    if (vaddr == 0)
-      panic("Failed to allocate stack for new task");
-  }
 
+  for (uint32_t i = 0; i < KERNEL_STACK_SIZE_PAGES; i++) {
+    if (!vmm_test_if_mapped(stack_addr + i * PAGE_SIZE)) {
+      uintptr_t vaddr = vmm_alloc_page(stack_addr - i * PAGE_SIZE, PAGE_F_PRESENT | PAGE_F_WRITABLE);
+      if (vaddr == 0) {
+        panic("Failed to allocate stack page for task");
+      }
+
+    }
+  }
   return stack_addr;
 }
 
 // ? i need this in case of the task returns
+__attribute__((noreturn))
 void task_wrapper(void (*entry)(void *), void *params) {
   entry(params);
   task_exit(0);
+}
+
+
+thread_t *task_get_current(void) {
+  return current_task;
 }

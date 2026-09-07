@@ -4,6 +4,8 @@
 #define THREAD_READY 0
 #define THREAD_RUNNING 1
 #define THREAD_BLOCKED 2
+
+#define SHED_CONTEXT_TIME 100
 #include <stdint.h>
 
 typedef struct thread_t {
@@ -17,12 +19,17 @@ typedef struct thread_t {
 } thread_t;
 
 extern void switch_context(thread_t *current, thread_t *next);
-extern void push_int_context(uintptr_t stack_pointer, void *params,
-                             void (*entry)(void *));
+extern void switch_to(thread_t *next);
+// extern void push_int_context(uintptr_t stack_pointer, void *params,
+//                              void (*entry)(void *));
+extern uintptr_t push_int_context(uintptr_t stack_pointer, void *params,
+                                   void (*entry)(void *));
 // i need this in case of the task returns
 void task_wrapper(void (*entry)(void *), void *params);
 void shed_init(void);
 thread_t *task_create(void (*entry)(void *), void *params);
 int task_exit(int code);
 void task_delay(uint64_t ms);
+void schedule(void);
+thread_t *task_get_current(void);
 #endif

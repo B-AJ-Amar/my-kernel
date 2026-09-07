@@ -322,7 +322,7 @@ irq15:
 
 inetupt_common:
     pushad ;push : EAX, ECX, EDX, EBX,ESP, EBP, ESI, EDI
-    cld
+    cld ;
 
     push esp         ; ? push the vlue of the stackpointer ( pointer to registers :) )
     call interupt_handler

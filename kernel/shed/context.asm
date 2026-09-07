@@ -1,25 +1,32 @@
 [bits 32]
-
 extern task_wrapper
-
 DEFAULT_EFLAGS equ 0x202
 CODE_SEG equ 0x08
 DATA_SEG equ 0x10
 
 global switch_context
 switch_context:
+    pushfd                    ; save EFLAGS (including IF) of the outgoing task
     pushad
-
-    mov eax, [esp + 36]      ; current
+    mov eax, [esp + 40]       ; current  (offsets shift by 4 because of pushfd)
     mov [eax], esp
-    
-    mov eax, [esp + 40]      ; next
-    mov esp, [eax]
-    
-    popad
-    ret
-    
 
+    mov eax, [esp + 44]       ; next
+    mov esp, [eax]
+
+    popad
+    popfd                     ; restore EFLAGS (including IF) of the incoming task
+    ret
+
+; ? in case of the current exited
+global switch_to
+switch_to:
+    mov eax, [esp + 4]       ; next
+    mov esp, [eax]
+
+    popad
+    popfd
+    ret
 ; ? docs: Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 3 (3A, 3B, 3C & 3D): System Programming Guide page 199
 ; ESP -->
 ; ───────────────── (switch_context > pushad)
@@ -41,23 +48,29 @@ switch_context:
 ;  params          
 ; ─────────────────
 
+
 global push_int_context
 push_int_context:
+    mov eax, [esp + 4]    ; stack top (from task_alloc_stack)
+    mov ecx, [esp + 8]    ; params
+    mov edx, [esp + 12]   ; entry
 
-    mov eax, [esp + 4] ; stack pointer
-    .int_context:
-    mov ecx, [esp + 8] ; eip
-    mov [eax-4], ecx ; params
-    mov ecx, [esp + 12] ; eip
-    mov [eax-8], ecx ; entry
-    xor ecx, ecx
-    mov [eax-12], ecx ; fake return to keep the structure of the call correct, i dont think that wiill be needed anyway (the theread wll be deleted in task_exit()
-    
-    .thread_context:
-    mov ecx, DEFAULT_EFLAGS
-    mov [eax-16], ecx
-    mov ecx, CODE_SEG
-    mov [eax-20], ecx
-    mov ecx, task_wrapper
-    mov [eax-24], ecx ; eip (wrapper_function)
-    ret
+    sub eax, 52            ; 8 regs(32) + eflags(4) + wrapper eip(4) + fake ret(4) + entry(4) + params(4)
+
+    mov dword [eax + 0],  0   ; edi
+    mov dword [eax + 4],  0   ; esi
+    mov dword [eax + 8],  0   ; ebp
+    mov dword [eax + 12], 0   ; esp (ignored by popad)
+    mov dword [eax + 16], 0   ; ebx
+    mov dword [eax + 20], 0   ; edx
+    mov dword [eax + 24], 0   ; ecx
+    mov dword [eax + 28], 0   ; eax
+
+    mov dword [eax + 32], DEFAULT_EFLAGS   ; IF=1 for the new task, from the start
+
+    mov dword [eax + 36], task_wrapper     ; popped as EIP by switch_context's ret
+    mov dword [eax + 40], 0                ; fake return addr for task_wrapper
+    mov [eax + 44], edx                     ; entry  -> task_wrapper arg1
+    mov [eax + 48], ecx                     ; params -> task_wrapper arg2
+
+    ret                                      ; eax = new sp, returned to caller
