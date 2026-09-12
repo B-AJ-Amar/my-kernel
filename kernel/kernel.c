@@ -20,6 +20,19 @@ extern char __stack_top;
 
 void infinite_print(const char *str);
 void shell(void);
+void task_a(void *p) {
+    while (1) {
+        printf("A");
+        for (volatile int i = 0; i < 1000000; i++);
+    }
+}
+
+void task_b(void *p) {
+    while (1) {
+        printf("B");
+        for (volatile int i = 0; i < 1000000; i++);
+    }
+}
 void kernel(void) {
 
   disable_interrupts();
@@ -41,8 +54,9 @@ void kernel(void) {
   mm_init(boot,(uintptr_t)&__stack_top,(uintptr_t)&__stack_bottom);
 
   shed_init();
-  
   enable_interrupts();
+  task_create(task_a, NULL);
+  task_create(task_b, NULL);
 
 //   task_create((void *)infinite_print, "Hello, World!\n");
 //   task_create((void *)infinite_print, "Bye, World!\n");
@@ -62,20 +76,21 @@ printf("stack top:    0x%x\n", (uintptr_t)&__stack_top);
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  sleep(3000);
-  printf("\033[4,0] Hello from the kernel\n");
+  while(1);
+//   sleep(3000);
+//   printf("\033[4,0] Hello from the kernel\n");
 
-  keyboard_event_t *event;
+//   keyboard_event_t *event;
 
-  // todo: scredular
-  while (1) {
+//   // todo: scredular
+//   while (1) {
 
-    // tty process
-    while (tty_check_events()) {
-      event = tty_read_event();
-      tty_handle_event(event);
-    }
-  }
+//     // tty process
+//     while (tty_check_events()) {
+//       event = tty_read_event();
+//       tty_handle_event(event);
+//     }
+//   }
 }
 
 void shell(void)
