@@ -1,3 +1,29 @@
+## [0.3.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.2.0...v0.3.0) (2026-09-12)
+
+### Features
+
+* add basic scheduling functions ([15c4260](https://github.com/B-AJ-Amar/my-kernel/commit/15c4260d1aa8bce764c0f9c3ba8abf3020ed70fd))
+* add scheduler header ([3a906a3](https://github.com/B-AJ-Amar/my-kernel/commit/3a906a3933a673399d65cd2e0c844997bbdc8a2a))
+* add sheduler ([b1909b1](https://github.com/B-AJ-Amar/my-kernel/commit/b1909b1c6e4bf21d7508a140f524ec28d8b66572))
+* **shed:** add contex switch handling ([b96030e](https://github.com/B-AJ-Amar/my-kernel/commit/b96030ecf3e6ac061d08898f5d6895cec73f42dc))
+
+### Bug Fixes
+
+* 1/2 sheduler ([e7022c4](https://github.com/B-AJ-Amar/my-kernel/commit/e7022c46317ea430619abc6aa664833fd6e4cc26))
+* mem allocation ([4077de4](https://github.com/B-AJ-Amar/my-kernel/commit/4077de43542864dd08ffcf5e60e997f373748347))
+* memory init alloc ([632f8fe](https://github.com/B-AJ-Amar/my-kernel/commit/632f8fe62367a7d52148aa56e7302491fff6cb60))
+* quick ix for protected mode stack pointer ([a83157e](https://github.com/B-AJ-Amar/my-kernel/commit/a83157e1d944456cf58cd499fa3c8eba1dc937fd))
+
+### Refactoring
+
+* addr datatypes ([170acd0](https://github.com/B-AJ-Amar/my-kernel/commit/170acd0442b48a68d9b5dc3031c1facd6ce762dc))
+* change sp to safer address ([dc1eb24](https://github.com/B-AJ-Amar/my-kernel/commit/dc1eb24983fff9329343dc3ae884a2ca9f340339))
+* some changes ([7106126](https://github.com/B-AJ-Amar/my-kernel/commit/71061264e4cd1137e8965ee42c4524b7b6d6425f))
+
+### Internal
+
+* foramt ([1b1c3d0](https://github.com/B-AJ-Amar/my-kernel/commit/1b1c3d03a7f5a49a4203139b374d53654fb8cb60))
+
 ## [0.2.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.1.0...v0.2.0) (2026-08-21)
 
 ### Features
