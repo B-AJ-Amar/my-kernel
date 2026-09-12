@@ -11,22 +11,3 @@ uint8_t inb(uint16_t port) {
 
   return value;
 }
-
-void hlt() { __asm__ volatile("hlt"); }
-
-void lidt(void *idt_ptr) {
-  __asm__ volatile(".intel_syntax noprefix\n\t"
-                   "lidt [%0]\n\t"
-                   ".att_syntax prefix"
-                   :
-                   : "r"(idt_ptr));
-}
-
-void enable_interrupts(void) { __asm__ volatile("sti"); }
-void disable_interrupts(void) { __asm__ volatile("cli"); }
-
-uint32_t get_cr2(void) {
-  uint32_t cr2;
-  __asm__ volatile("mov %%cr2, %0" : "=r"(cr2));
-  return cr2;
-}

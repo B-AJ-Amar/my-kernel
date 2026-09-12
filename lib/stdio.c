@@ -1,4 +1,4 @@
-#include <io.h>
+#include <asm.h>
 #include <kernel/console.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -12,6 +12,13 @@ static int _utoa(char *buf, size_t buf_size, uint64_t val, int base,
 // TODO: add colors support e.g `\033[0;31m`
 
 void clear_screen() { console_clear(); }
+
+int print(const char *str) {
+  if (!str)
+    return -1;
+  console_write(str);
+  return 0;
+}
 
 int puts(const char *str) {
   if (!str)

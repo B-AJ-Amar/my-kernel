@@ -1,5 +1,5 @@
+#include <asm.h>
 #include <drivers/keyboard/keyboard.h>
-#include <io.h>
 #include <kernel/console.h>
 #include <kernel/tty.h>
 #include <stdbool.h>

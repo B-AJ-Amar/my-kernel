@@ -45,7 +45,7 @@ typedef struct {
 
 } keyboard_event_queue;
 
-void init_keyboard(kb_backend_t backend, const keyboard_layout_t *layout);
+void keyboard_init(kb_backend_t backend, const keyboard_layout_t *layout);
 bool is_printable_key(uint8_t key_code);
 const keyboard_layout_t *keyboard_get_layout(void);
 void keyboard_set_layout(const keyboard_layout_t *layout);

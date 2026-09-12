@@ -1,4 +1,4 @@
-ENTRY(kernel)
+ENTRY(kernel_entry)
 
 
 SECTIONS {
@@ -26,5 +26,13 @@ SECTIONS {
     }
 
     kernel_end = .;
+
+    .stack ALIGN(4096) (NOLOAD) :
+    {
+        __stack_bottom = .;
+        . = . + 16*1024;   /* 16KB stack */
+        __stack_top = .;
+    }
+
 
 }

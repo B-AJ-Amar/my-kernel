@@ -24,5 +24,5 @@ extern struct idt_ptr idtr;
 
 void load_idt(struct idt_ptr *idtr);
 void set_idt_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags);
-void init_idt();
+void idt_init();
 #endif

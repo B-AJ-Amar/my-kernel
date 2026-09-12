@@ -1,6 +1,6 @@
+#include <asm.h>
 #include <interupts/interupt.h>
 #include <interupts/isr.h>
-#include <io.h>
 #include <stdio.h>
 
 const char *exception_names[32] = {"Divide Error",
@@ -38,6 +38,7 @@ const char *exception_names[32] = {"Divide Error",
 
 void isr_handler(interupt_registers_t *regs) {
   // todo: add a better handler for page fault
+  printf("\033[4,0]");
   if (regs->int_no == 14) {
     uint32_t faulting_address = get_cr2();
     panic("Exception %u:%u : Page Fault at address: 0x%x\n", regs->int_no,

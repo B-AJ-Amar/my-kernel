@@ -1,11 +1,12 @@
+#include <asm.h>
 #include <drivers/keyboard/keyboard.h>
 #include <drivers/keyboard/layout.h>
 #include <drivers/ps2/controller.h>
 #include <drivers/vga/vga.h>
 #include <interupts/idt.h>
 #include <interupts/pic.h>
-#include <io.h>
 #include <kernel/console.h>
+#include <kernel/shed/shed.h>
 #include <kernel/tty.h>
 #include <mm/heap/heap.h>
 #include <mm/mm.h>
@@ -13,10 +14,32 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
-__attribute__((section(".start"))) void kernel(void) {
+
+extern char __stack_bottom;
+extern char __stack_top;
+
+void shell(void);
+void task_a(void *p) {
+    printf("\033[2,0] Task A started\n");
+  while (1) {
+    printf("\033[2,0]A");
+    for (volatile int i = 0; i < 1000000; i++)
+      ;
+  }
+}
+
+void task_b(void *p) {
+    printf("\033[3,0] Task B started\n");
+  while (1) {
+    printf("\033[3,0]B");
+    for (volatile int i = 0; i < 1000000; i++)
+      ;
+  }
+}
+void kernel(void) {
 
   disable_interrupts();
-  init_idt();
+  idt_init();
   pic_init();
 
   pit_init(PIT_FREQUENCY);
@@ -25,28 +48,44 @@ __attribute__((section(".start"))) void kernel(void) {
   console_set(&vga_console);
 
   ps2_init();
-  init_keyboard(KB_BACKEND_PS2, &layout_us);
+  keyboard_init(KB_BACKEND_PS2, &layout_us);
 
   tty_init(local_keyboard_input, local_console_output);
 
-  enable_interrupts();
-
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
-  init_mm(boot);
+  mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
 
-  uint32_t array = kmalloc(100);
+  shed_init();
+  enable_interrupts();
+  task_create(task_a, NULL);
+  task_create(task_b, NULL);
+
+
+  uintptr_t sp;
+  __asm__ volatile("mov %%esp, %0" : "=r"(sp));
+  printf("Current stack pointer: 0x%lx\n", sp);
+
+  uint32_t *array = (uint32_t *)kmalloc(100);
   kfree(array);
 
   printf("kernel address: 0x%x\n", boot->kernel_addr);
+
+  printf("stack bottom: 0x%x\n", (uintptr_t)&__stack_bottom);
+  printf("stack top:    0x%x\n", (uintptr_t)&__stack_top);
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  sleep(3000);
-  printf("\033[4,0] Hello from the kernel\n");
+  while (1) {
+    printf("\033[1,0]k");
+    for (volatile int i = 0; i < 1000000; i++);
+  }
+    
 
+
+}
+
+void shell(void) {
   keyboard_event_t *event;
-
-  // todo: scredular
   while (1) {
 
     // tty process
