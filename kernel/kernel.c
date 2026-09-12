@@ -14,24 +14,27 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
-// Extern declarations for kernel stack boundaries (defined in linker script)
+
 extern char __stack_bottom;
 extern char __stack_top;
 
-void infinite_print(const char *str);
 void shell(void);
 void task_a(void *p) {
-    while (1) {
-        printf("A");
-        for (volatile int i = 0; i < 1000000; i++);
-    }
+    printf("\033[2,0] Task A started\n");
+  while (1) {
+    printf("\033[2,0]A");
+    for (volatile int i = 0; i < 1000000; i++)
+      ;
+  }
 }
 
 void task_b(void *p) {
-    while (1) {
-        printf("B");
-        for (volatile int i = 0; i < 1000000; i++);
-    }
+    printf("\033[3,0] Task B started\n");
+  while (1) {
+    printf("\033[3,0]B");
+    for (volatile int i = 0; i < 1000000; i++)
+      ;
+  }
 }
 void kernel(void) {
 
@@ -49,52 +52,39 @@ void kernel(void) {
 
   tty_init(local_keyboard_input, local_console_output);
 
-  
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
-  mm_init(boot,(uintptr_t)&__stack_top,(uintptr_t)&__stack_bottom);
+  mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
 
   shed_init();
   enable_interrupts();
   task_create(task_a, NULL);
   task_create(task_b, NULL);
 
-//   task_create((void *)infinite_print, "Hello, World!\n");
-//   task_create((void *)infinite_print, "Bye, World!\n");
-  // task_create((void *)shell, NULL);
-  
+
   uintptr_t sp;
   __asm__ volatile("mov %%esp, %0" : "=r"(sp));
   printf("Current stack pointer: 0x%lx\n", sp);
-  
+
   uint32_t *array = (uint32_t *)kmalloc(100);
   kfree(array);
 
   printf("kernel address: 0x%x\n", boot->kernel_addr);
 
-printf("stack bottom: 0x%x\n", (uintptr_t)&__stack_bottom);
-printf("stack top:    0x%x\n", (uintptr_t)&__stack_top);
+  printf("stack bottom: 0x%x\n", (uintptr_t)&__stack_bottom);
+  printf("stack top:    0x%x\n", (uintptr_t)&__stack_top);
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  while(1);
-//   sleep(3000);
-//   printf("\033[4,0] Hello from the kernel\n");
+  while (1) {
+    printf("\033[1,0]k");
+    for (volatile int i = 0; i < 1000000; i++);
+  }
+    
 
-//   keyboard_event_t *event;
 
-//   // todo: scredular
-//   while (1) {
-
-//     // tty process
-//     while (tty_check_events()) {
-//       event = tty_read_event();
-//       tty_handle_event(event);
-//     }
-//   }
 }
 
-void shell(void)
-{
+void shell(void) {
   keyboard_event_t *event;
   while (1) {
 
@@ -104,12 +94,4 @@ void shell(void)
       tty_handle_event(event);
     }
   }
-}
-
-void infinite_print(const char *str) {
-  uint8_t i = 0;
-  while (i<10) {
-    printf("[%u]%s", i++, str);
-  }
-  return;
 }

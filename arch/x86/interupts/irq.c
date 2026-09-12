@@ -5,7 +5,7 @@
 #include <timer/pit.h>
 // TODO: keyboard+ time drivers
 static void __irq_keyboard_handler__();
-static void __irq_timer_handler__();
+static void __irq_timer_handler__(interupt_registers_t *regs);
 
 void irq_handler(interupt_registers_t *regs) {
   pic_send_eoi(regs->int_no - PIC1_OFFSET); // end of interupt
@@ -15,10 +15,9 @@ void irq_handler(interupt_registers_t *regs) {
     break;
 
   case 32:
-    __irq_timer_handler__();
+    __irq_timer_handler__(regs);
     break;
   }
-
 }
 
 static void __irq_keyboard_handler__() {
@@ -28,4 +27,4 @@ static void __irq_keyboard_handler__() {
   }
 }
 
-static void __irq_timer_handler__() { pit_interrupt_handler(); }
+static void __irq_timer_handler__(interupt_registers_t *regs) { pit_interrupt_handler(regs); }

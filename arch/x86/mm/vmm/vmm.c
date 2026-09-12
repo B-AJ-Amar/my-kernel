@@ -285,7 +285,6 @@ void vmm_unmap_page(uint32_t virtual_addr) {
 
   asm volatile("invlpg (%0)" : : "r"(virtual_addr) : "memory");
 
-
   pmm_free_frame(physical_addr);
 
   /*
@@ -391,7 +390,6 @@ uint32_t vmm_alloc_pages(uint32_t from, uint32_t to, uint32_t count,
 
   uint32_t frames[vpages_count];
 
-
   for (uint32_t i = 0; i < vpages_count; i++) {
 
     uint32_t physical_addr = pmm_alloc_frame();
@@ -399,7 +397,6 @@ uint32_t vmm_alloc_pages(uint32_t from, uint32_t to, uint32_t count,
     if (physical_addr == 0) {
 
       // ? roll back already allocated frames.
-       
 
       for (uint32_t j = 0; j < i; j++) {
 

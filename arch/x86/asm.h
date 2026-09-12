@@ -7,6 +7,10 @@
 #define KERNEL_CS 0x8
 #define KERNEL_DS 0x10
 
+#define CODE_SEG KERNEL_CS
+#define DATA_SEG KERNEL_DS
+#define DEFAULT_EFLAGS 0x202 // IF=1, bit 1 is always 1
+
 void iasm();
 static inline void popad() {
   __asm__ volatile(".intel_syntax noprefix\n\t"
