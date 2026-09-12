@@ -1,10 +1,12 @@
 #include <mm/pmm/pmm.h>
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
 static void mem_set_range(uint64_t base, uint64_t length, bool is_reserved);
+
 static void bitmap_set_range(uint32_t start_frame, uint32_t num_frames,
                              bool is_reserved);
 
@@ -16,31 +18,40 @@ static uint8_t frame_bitmap[BITMAP_SIZE];
 void pmm_init(uint64_t kernel_addr, uint64_t kernel_size,
               uint32_t e820_entries_count, uint32_t e820_entries_addr) {
   e820_entries.entries = (e820_entry_t *)e820_entries_addr;
+
   e820_entries.count = e820_entries_count;
+
   memset(frame_bitmap, 0xFF, sizeof(frame_bitmap));
 
   printf("[\033[2,0]x\033[15,0]] e820 entries count : %u\n",
          e820_entries.count);
+
   for (uint32_t i = 0; i < e820_entries.count; i++) {
+
     e820_entry_t *entry = &e820_entries.entries[i];
+
     if (entry->type == E820_TYPE_USABLE) {
       mem_set_range(entry->base, entry->length, false);
     }
 
-    printf("[\033[2,0]x\033[15,0]] E820 Entry %d: Base: 0x%llx, Length: "
-           "0x%llx, Type: %u\n",
+    printf("[\033[2,0]x\033[15,0]] E820 Entry %d: "
+           "Base: 0x%llx, Length: 0x%llx, Type: %u\n",
            i, entry->base, entry->length, entry->type);
   }
 
   uint64_t kernel_end_addr = (uint64_t)&kernel_end;
+
   uint64_t kernel_length = kernel_size;
+
   if (kernel_end_addr > kernel_addr &&
       kernel_end_addr - kernel_addr > kernel_length) {
+
     kernel_length = kernel_end_addr - kernel_addr;
   }
 
   mem_set_range(kernel_addr, kernel_length, true);
-  mem_set_range(0, 0x100000, true); // ? first 1mb (real mode stuff)
+
+  mem_set_range(0, 0x100000, true);
 }
 
 static void bitmap_reserve(uint32_t frame) {
@@ -58,32 +69,42 @@ static bool bitmap_test(uint32_t frame) {
 static void bitmap_set_range(uint32_t start_frame, uint32_t num_frames,
                              bool is_reserved) {
   if (is_reserved) {
+
     for (uint32_t i = 0; i < num_frames; i++) {
+
       bitmap_reserve(start_frame + i);
     }
+
   } else {
+
     for (uint32_t i = 0; i < num_frames; i++) {
+
       bitmap_clear(start_frame + i);
     }
   }
 }
 
 static void mem_set_range(uint64_t base, uint64_t length, bool is_reserved) {
-  if (length == 0 || base >= MAX_PHYS_MEMORY || base + length > MAX_PHYS_MEMORY)
+  if (length == 0 || base >= MAX_PHYS_MEMORY ||
+      base + length > MAX_PHYS_MEMORY) {
+
     return;
-  uint32_t start_frame = base / FRAME_SIZE;
-  uint32_t num_frames = (length + FRAME_SIZE - 1) / FRAME_SIZE;
-  if (is_reserved) {
-    bitmap_set_range(start_frame, num_frames, true);
-  } else {
-    bitmap_set_range(start_frame, num_frames, false);
   }
+
+  uint32_t start_frame = base / FRAME_SIZE;
+
+  uint32_t num_frames = (length + FRAME_SIZE - 1) / FRAME_SIZE;
+
+  bitmap_set_range(start_frame, num_frames, is_reserved);
 }
 
 uint32_t pmm_alloc_frame(void) {
   for (uint32_t frame = 0; frame < MAX_FRAMES; frame++) {
+
     if (!bitmap_test(frame)) {
+
       bitmap_reserve(frame);
+
       return frame * FRAME_SIZE;
     }
   }
@@ -91,20 +112,24 @@ uint32_t pmm_alloc_frame(void) {
   return 0;
 }
 
-// ! TOFIX: i dont know why but its buggy  (this problem hapen only in pageing mode)
-// ? edit: i think that i found the bug (pmm_alloc_frame return phisical addr but memset concider it as virtual addr)
 uint32_t pmm_alloc_empty_frame(void) {
   uint32_t addr = pmm_alloc_frame();
+
   if (addr != 0) {
+
     memset((void *)addr, 0, FRAME_SIZE);
+
     return addr;
   }
+
   return 0;
 }
 
 void pmm_free_frame(uint32_t address) {
-  address = address & ~(FRAME_SIZE - 1);
+  address &= ~(FRAME_SIZE - 1);
+
   uint32_t frame = address / FRAME_SIZE;
+
   bitmap_clear(frame);
 }
 
@@ -112,10 +137,14 @@ uintptr_t pmm_alloc_specific_frame(uintptr_t address) {
   if (address >= MAX_PHYS_MEMORY) {
     return 0;
   }
+
   uint32_t frame = address / FRAME_SIZE;
-  if (bitmap_test(frame))
+
+  if (bitmap_test(frame)) {
     return 0;
+  }
 
   bitmap_reserve(frame);
+
   return address;
 }

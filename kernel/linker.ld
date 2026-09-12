@@ -30,7 +30,7 @@ SECTIONS {
     .stack ALIGN(4096) (NOLOAD) :
     {
         __stack_bottom = .;
-        . = . + 8*1024;   /* 8KB stack */
+        . = . + 16*1024;   /* 16KB stack */
         __stack_top = .;
     }
 

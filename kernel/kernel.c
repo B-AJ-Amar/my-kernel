@@ -44,11 +44,13 @@ void kernel(void) {
   
   enable_interrupts();
 
-  task_create((void *)infinite_print, "Hello, World!\n");
-  task_create((void *)infinite_print, "Bye, World!\n");
+//   task_create((void *)infinite_print, "Hello, World!\n");
+//   task_create((void *)infinite_print, "Bye, World!\n");
   // task_create((void *)shell, NULL);
   
-  
+  uintptr_t sp;
+  __asm__ volatile("mov %%esp, %0" : "=r"(sp));
+  printf("Current stack pointer: 0x%lx\n", sp);
   
   uint32_t *array = (uint32_t *)kmalloc(100);
   kfree(array);
