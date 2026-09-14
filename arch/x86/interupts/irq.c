@@ -10,11 +10,11 @@ static void __irq_timer_handler__(interupt_registers_t *regs);
 void irq_handler(interupt_registers_t *regs) {
   pic_send_eoi(regs->int_no - PIC1_OFFSET); // end of interupt
   switch (regs->int_no) {
-  case 33:
+    case 33:
     __irq_keyboard_handler__();
     break;
-
-  case 32:
+    
+    case 32:
     __irq_timer_handler__(regs);
     break;
   }

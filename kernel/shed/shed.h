@@ -8,7 +8,7 @@
 #define THREAD_RUNNING 1
 #define THREAD_BLOCKED 2
 
-#define SHED_CONTEXT_TIME 100
+#define SHED_CONTEXT_TIME 5 // each 5 ms
 
 
 typedef struct thread_t {

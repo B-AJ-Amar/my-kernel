@@ -18,7 +18,8 @@
 extern char __stack_bottom;
 extern char __stack_top;
 
-void shell(void);
+static tty_t tty0;
+
 void task_a(void *p) {
     printf("\033[2,0] Task A started\n");
   while (1) {
@@ -28,12 +29,14 @@ void task_a(void *p) {
   }
 }
 
-void task_b(void *p) {
-    printf("\033[3,0] Task B started\n");
+void shell(void *p) {
+  keyboard_event_t *event;
   while (1) {
-    printf("\033[3,0]B");
-    for (volatile int i = 0; i < 1000000; i++)
-      ;
+    printf("\033[15,0]");
+    while ((event = keyboard_peek_event()) != NULL) {
+      event = keyboard_pop_event();
+      tty_handle_event(&tty0, event);
+    }
   }
 }
 void kernel(void) {
@@ -49,16 +52,26 @@ void kernel(void) {
 
   ps2_init();
   keyboard_init(KB_BACKEND_PS2, &layout_us);
+  tty_output_t local_console_output = {
+    .putc = console_putchar,
+    .write = console_write,
+    .nwrite = console_nwrite,
+    .move_cursor = console_move_cursor,
+};
 
-  tty_init(local_keyboard_input, local_console_output);
+
+
+  tty_init(&tty0, local_console_output);
 
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
 
   shed_init();
   enable_interrupts();
+
+
   task_create(task_a, NULL);
-  task_create(task_b, NULL);
+  task_create(shell, NULL);
 
 
   uintptr_t sp;
@@ -75,23 +88,8 @@ void kernel(void) {
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  while (1) {
-    printf("\033[1,0]k");
-    for (volatile int i = 0; i < 1000000; i++);
-  }
+  while (1);
+  
     
 
-
-}
-
-void shell(void) {
-  keyboard_event_t *event;
-  while (1) {
-
-    // tty process
-    while (tty_check_events()) {
-      event = tty_read_event();
-      tty_handle_event(event);
-    }
-  }
 }
