@@ -10,7 +10,7 @@ LDFLAGS := -m32 -ffreestanding -nostdlib -T kernel/linker.ld
 BUILD_DIR := build
 BIN_DIR := bin
 
-C_SRCS := $(shell find kernel drivers lib arch -name '*.c')
+C_SRCS := $(shell find kernel drivers lib arch fs -name '*.c')
 ASM_SRCS := $(shell find kernel drivers lib arch -name '*.asm' ! -path 'arch/*/boot/*')
 
 C_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SRCS))

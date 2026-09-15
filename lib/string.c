@@ -1,6 +1,6 @@
-
-
+#include <stddef.h>
 #include <string.h>
+#include <stdlib.h>
 
 void *memcpy(void *dest, const void *src, size_t len) {
   char *d = dest;
@@ -96,4 +96,63 @@ int strncmp(const char *s1, const char *s2, size_t n) {
     return 0;
   }
   return *p1 - *p2;
+}
+
+char *strdup(const char *src) {
+  size_t length = strlen((char *)src);
+  char *copy = malloc(length + 1);
+  if (copy == NULL)
+    return NULL;
+
+  memcpy(copy, src, length + 1);
+  return copy;
+}
+
+
+
+
+static char *strtok_next = NULL;
+
+static int is_delimiter(char c, const char *delim)
+{
+    while (*delim) {
+        if (c == *delim)
+            return 1;
+        delim++;
+    }
+
+    return 0;
+}
+
+char *strtok(char *str, const char *delim)
+{
+    char *start;
+
+    if (str != NULL)
+        strtok_next = str;
+
+    if (strtok_next == NULL || delim == NULL)
+        return NULL;
+
+    while (*strtok_next && is_delimiter(*strtok_next, delim))
+        strtok_next++;
+
+    if (*strtok_next == '\0') {
+        strtok_next = NULL;
+        return NULL;
+    }
+
+    start = strtok_next;
+
+    while (*strtok_next && !is_delimiter(*strtok_next, delim))
+        strtok_next++;
+
+    if (*strtok_next != '\0') {
+        *strtok_next = '\0';
+        strtok_next++;
+    } else {
+        strtok_next = NULL;
+    }
+
+    return start;
 }

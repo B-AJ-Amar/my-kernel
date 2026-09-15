@@ -14,6 +14,7 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
+#include <fs/fs.h>
 
 extern char __stack_bottom;
 extern char __stack_top;
@@ -66,6 +67,8 @@ void kernel(void) {
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
 
+  fs_init();
+
   shed_init();
   enable_interrupts();
 
@@ -90,6 +93,4 @@ void kernel(void) {
   printf("\033[3,0] Hello from the kernel\n");
   while (1);
   
-    
-
 }
