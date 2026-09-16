@@ -17,8 +17,8 @@ KERNEL_ADDR_PM equ 0x100000
 KERNEL_RM_SP equ 0x9fff
 
 ; this will be updated by the build script
-KERNEL_SIZE equ 21472
-KERNEL_SECTORS equ 42
+KERNEL_SIZE equ 29664
+KERNEL_SECTORS equ 58
 
 BOOT_INFO_ADDR equ 0x7000
 
@@ -74,10 +74,6 @@ start_protected_mode:
     
     call boot_info
     
-    mov esi, KERNEL_ADDR_RM
-    mov edi, KERNEL_ADDR_PM
-    mov ecx, KERNEL_SIZE
-    rep movsb
 kernel_switch:
     jmp CODE_SEG:KERNEL_ADDR_PM
     hlt
