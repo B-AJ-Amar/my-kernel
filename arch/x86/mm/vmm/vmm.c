@@ -386,7 +386,7 @@ uint32_t vmm_alloc_pages(uint32_t from, uint32_t to, uint32_t count,
     return 0;
   }
 
-  virtual_addr -= vpages_count * PAGE_SIZE;
+  virtual_addr -= (vpages_count - 1) * PAGE_SIZE;
 
   uint32_t frames[vpages_count];
 

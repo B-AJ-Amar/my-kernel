@@ -9,6 +9,11 @@ static heap_block_t *kernel_heap_head = NULL;
 
 void k_heap_init(void) {
   uint32_t heap_start_addr = vmm_alloc_kernel_pages(1);
+  if (heap_start_addr == 0) {
+    kernel_heap_head = NULL;
+    return;
+  }
+
   kernel_heap_head = (heap_block_t *)heap_start_addr;
   kernel_heap_head[0].size = PAGE_SIZE - sizeof(heap_block_t);
   kernel_heap_head[0].free = true;
@@ -22,7 +27,7 @@ static uint32_t free_block(void *ptr, heap_block_t *heap_head);
 // first fit
 void *kmalloc(uint32_t size) {
 
-  if (size == 0 || size > KERNEL_HEAP_SIZE) {
+  if (size == 0 || size > KERNEL_HEAP_SIZE || kernel_heap_head == NULL) {
     return NULL;
   }
 
@@ -84,6 +89,7 @@ uint32_t create_block(uint32_t size, heap_block_t *heap_head,
       new_block->next = current->next;
 
       current->size = size;
+      current->free = false;
       current->next = new_block;
 
       if (new_block->next != NULL) {
@@ -103,6 +109,7 @@ uint32_t create_block(uint32_t size, heap_block_t *heap_head,
     new_block->next = NULL;
 
     current->size = size;
+    current->free = false;
     current->next = new_block;
 
     return (uint32_t)(current + 1);
