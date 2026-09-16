@@ -14,6 +14,7 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
+#include <fs/fs.h>
 
 extern char __stack_bottom;
 extern char __stack_top;
@@ -65,7 +66,14 @@ void kernel(void) {
 
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
-
+  fs_init();
+  // fs_touch("/", "test_file.txt");
+  // fs_mkdir("/", "amar_test");
+  // fs_base_node_t *list = fs_ls("/");
+  // for (size_t i = 0; list[i].name[0] != '\0'; i++) {
+  //   char *color = (list[i].type == FS_DIR) ? "\033[3,0]m" : "\033[15,0]";
+  //   printf("fs_ls: %s%s\n", color, list[i].name );
+  // }
   shed_init();
   enable_interrupts();
 
