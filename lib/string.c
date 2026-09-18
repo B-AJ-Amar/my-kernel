@@ -100,21 +100,11 @@ int strncmp(const char *s1, const char *s2, size_t n) {
   return *p1 - *p2;
 }
 
+int isalpha(int c) { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); }
 
-int isalpha(int c) {
-  return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
-}
+int isdigit(int c) { return (c >= '0' && c <= '9'); }
 
-int isdigit(int c) {
-  return (c >= '0' && c <= '9');
-}
-
-int isalnum(int c) {
-  return isalpha(c) || isdigit(c);
-}
-
-
-
+int isalnum(int c) { return isalpha(c) || isdigit(c); }
 
 char *strdup(const char *src) {
   size_t length = strlen((char *)src);
@@ -129,51 +119,46 @@ char *strdup(const char *src) {
   return copy;
 }
 
-
-
-
 static char *strtok_next = NULL;
 
-static int is_delimiter(char c, const char *delim)
-{
-    while (*delim) {
-        if (c == *delim)
-            return 1;
-        delim++;
-    }
+static int is_delimiter(char c, const char *delim) {
+  while (*delim) {
+    if (c == *delim)
+      return 1;
+    delim++;
+  }
 
-    return 0;
+  return 0;
 }
 
-char *strtok(char *str, const char *delim)
-{
-    char *start;
+char *strtok(char *str, const char *delim) {
+  char *start;
 
-    if (str != NULL)
-        strtok_next = str;
+  if (str != NULL)
+    strtok_next = str;
 
-    if (strtok_next == NULL || delim == NULL)
-        return NULL;
+  if (strtok_next == NULL || delim == NULL)
+    return NULL;
 
-    while (*strtok_next && is_delimiter(*strtok_next, delim))
-        strtok_next++;
+  while (*strtok_next && is_delimiter(*strtok_next, delim))
+    strtok_next++;
 
-    if (*strtok_next == '\0') {
-        strtok_next = NULL;
-        return NULL;
-    }
+  if (*strtok_next == '\0') {
+    strtok_next = NULL;
+    return NULL;
+  }
 
-    start = strtok_next;
+  start = strtok_next;
 
-    while (*strtok_next && !is_delimiter(*strtok_next, delim))
-        strtok_next++;
+  while (*strtok_next && !is_delimiter(*strtok_next, delim))
+    strtok_next++;
 
-    if (*strtok_next != '\0') {
-        *strtok_next = '\0';
-        strtok_next++;
-    } else {
-        strtok_next = NULL;
-    }
+  if (*strtok_next != '\0') {
+    *strtok_next = '\0';
+    strtok_next++;
+  } else {
+    strtok_next = NULL;
+  }
 
-    return start;
+  return start;
 }

@@ -1,15 +1,14 @@
 #ifndef SHED_H
 #define SHED_H
 
-#include <stdint.h>
 #include <interupts/interupt.h>
+#include <stdint.h>
 
 #define THREAD_READY 0
 #define THREAD_RUNNING 1
 #define THREAD_BLOCKED 2
 
 #define SHED_CONTEXT_TIME 5 // each 5 ms
-
 
 typedef struct thread_t {
   uint32_t sp; /* saved interrupt frame pointer (points at EDI) */

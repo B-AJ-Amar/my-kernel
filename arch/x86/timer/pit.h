@@ -9,8 +9,8 @@
 #define PIT_DEFAULT_FREQUENCY 1193182
 #define PIT_FREQUENCY 100
 // divisor = PIT_DEFAULT_FREQUENCY / PIT_FREQUENCY
-#include <stdint.h>
 #include <interupts/interupt.h>
+#include <stdint.h>
 
 /*
 0x36 = 00 11 011 0

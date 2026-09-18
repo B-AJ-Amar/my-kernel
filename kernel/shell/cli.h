@@ -24,8 +24,8 @@ typedef int (*cli_handler_t)(cli_command_t *command);
 
 enum {
   CLI_SUCCESS,
-  CLI_ERROR ,
-  CLI_UNKNOWN_COMMAND ,
+  CLI_ERROR,
+  CLI_UNKNOWN_COMMAND,
   CLI_ALREADY_REGISTERED,
 };
 

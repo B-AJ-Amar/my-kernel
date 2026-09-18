@@ -17,7 +17,6 @@ int isalnum(int c);
 int isalpha(int c);
 int isdigit(int c);
 
-
 char *strdup(const char *src);
 char *strtok(char *str, const char *delim);
 #endif

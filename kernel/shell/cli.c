@@ -10,7 +10,8 @@ typedef struct cli_entry {
 } cli_entry_t;
 
 static cli_entry_t *cli_registry;
-// todo: sort the commands for faster search, or use a hash table for O(1) lookup
+// todo: sort the commands for faster search, or use a hash table for O(1)
+// lookup
 static cli_entry_t *find_command(const char *name) {
   cli_entry_t *entry = cli_registry;
 
@@ -165,8 +166,7 @@ bool cli_has_flag(const cli_command_t *command, char short_name) {
     return false;
 
   for (size_t i = 0; i < command->flag_count; i++) {
-    if (command->flags[i].value &&
-        command->flags[i].short_name == short_name)
+    if (command->flags[i].value && command->flags[i].short_name == short_name)
       return true;
   }
 

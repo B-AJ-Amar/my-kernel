@@ -6,7 +6,6 @@
 #include <stddef.h>
 #include <string.h>
 
-
 void tty_init(tty_t *tty, tty_output_t output) {
   tty->cursor = 0;
   tty->len = 0;
@@ -55,8 +54,7 @@ void tty_handle_event(tty_t *tty, const keyboard_event_t *event) {
     if (tty->cursor == 0)
       break;
 
-    memmove(&tty->buffer[tty->cursor - 1],
-            &tty->buffer[tty->cursor],
+    memmove(&tty->buffer[tty->cursor - 1], &tty->buffer[tty->cursor],
             tty->len - tty->cursor + 1);
 
     tty->cursor--;
@@ -78,8 +76,7 @@ void tty_handle_event(tty_t *tty, const keyboard_event_t *event) {
     if (tty->len >= TTY_BUFFER_SIZE - 1)
       break;
 
-    memmove(&tty->buffer[tty->cursor + 1],
-            &tty->buffer[tty->cursor],
+    memmove(&tty->buffer[tty->cursor + 1], &tty->buffer[tty->cursor],
             tty->len - tty->cursor + 1);
 
     tty->buffer[tty->cursor] = c;
@@ -96,17 +93,13 @@ void tty_handle_event(tty_t *tty, const keyboard_event_t *event) {
   }
 }
 
-void tty_write(tty_t *tty, const char *buf) {
-  tty->output.write(buf);
-}
+void tty_write(tty_t *tty, const char *buf) { tty->output.write(buf); }
 
 void tty_nwrite(tty_t *tty, const char *buf, size_t len) {
   tty->output.nwrite(buf, len);
 }
 
-void tty_putc(tty_t *tty, char c) {
-  tty->output.putc(c);
-}
+void tty_putc(tty_t *tty, char c) { tty->output.putc(c); }
 
 size_t tty_readline(tty_t *tty, char *buf, size_t buf_size) {
   while (!tty->line_ready)
@@ -134,9 +127,7 @@ size_t tty_read(tty_t *tty, char *buf, size_t count) {
   memcpy(buf, tty->buffer, n);
 
   if (n < tty->len) {
-    memmove(tty->buffer,
-            &tty->buffer[n],
-            tty->len - n + 1);
+    memmove(tty->buffer, &tty->buffer[n], tty->len - n + 1);
   }
 
   tty->len -= n;

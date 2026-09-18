@@ -24,10 +24,8 @@
 #define USER_SPACE_END 0xBFFFFFFF
 #define USER_SPACE_SIZE (USER_SPACE_END - USER_SPACE_BASE + 1)
 
-
-
 #define VMM_RECURSIVE_INDEX 1023
-#define VMM_PD_VIRTUAL_ADDR  0xFFFFF000
+#define VMM_PD_VIRTUAL_ADDR 0xFFFFF000
 #define VMM_PT_VIRTUAL_ADDR(dir_idx) (0xFFC00000 | ((uint32_t)(dir_idx) << 12))
 
 // ? HEAP
@@ -37,9 +35,9 @@
 
 /*
   Recursive paging
- 
+
   PDE[1023] points to the page directory itself.
- 
+
   0xFFC00000 -> page table 0
   0xFFC01000 -> page table 1
   ...
@@ -53,11 +51,11 @@
 
 #define KERNEL_STACK_PDE_INDEX 1022
 
-#define KERNEL_STACK_ADDR 0xFFBFF000 // it can start from 0xFFBFFF but for alignment i will start from 0xFFBFF000
+#define KERNEL_STACK_ADDR                                                      \
+  0xFFBFF000 // it can start from 0xFFBFFF but for alignment i will start from
+             // 0xFFBFF000
 #define KERNEL_STACK_SIZE 0x4000
 #define KERNEL_STACK_SIZE_PAGES (KERNEL_STACK_SIZE / PAGE_SIZE)
 
-
-void mm_init(boot_info_t *boot,uintptr_t sp_top,uintptr_t sp_bottom);
+void mm_init(boot_info_t *boot, uintptr_t sp_top, uintptr_t sp_bottom);
 #endif
-

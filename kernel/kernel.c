@@ -3,6 +3,7 @@
 #include <drivers/keyboard/layout.h>
 #include <drivers/ps2/controller.h>
 #include <drivers/vga/vga.h>
+#include <fs/fs.h>
 #include <interupts/idt.h>
 #include <interupts/pic.h>
 #include <kernel/console.h>
@@ -14,7 +15,6 @@
 #include <sleep.h>
 #include <stdio.h>
 #include <timer/pit.h>
-#include <fs/fs.h>
 
 extern char __stack_bottom;
 extern char __stack_top;
@@ -22,7 +22,7 @@ extern char __stack_top;
 static tty_t tty0;
 
 void task_a(void *p) {
-    printf("\033[2,0] Task A started\n");
+  printf("\033[2,0] Task A started\n");
   while (1) {
     printf("\033[2,0]A");
     for (volatile int i = 0; i < 1000000; i++)
@@ -54,13 +54,11 @@ void kernel(void) {
   ps2_init();
   keyboard_init(KB_BACKEND_PS2, &layout_us);
   tty_output_t local_console_output = {
-    .putc = console_putchar,
-    .write = console_write,
-    .nwrite = console_nwrite,
-    .move_cursor = console_move_cursor,
-};
-
-
+      .putc = console_putchar,
+      .write = console_write,
+      .nwrite = console_nwrite,
+      .move_cursor = console_move_cursor,
+  };
 
   tty_init(&tty0, local_console_output);
 
@@ -77,10 +75,8 @@ void kernel(void) {
   shed_init();
   enable_interrupts();
 
-
   task_create(task_a, NULL);
   task_create(shell, NULL);
-
 
   uintptr_t sp;
   __asm__ volatile("mov %%esp, %0" : "=r"(sp));
@@ -96,8 +92,6 @@ void kernel(void) {
   printf("\033[1,4] Hello from the kernel\n");
   printf("\033[2,0] Hello from the kernel\n");
   printf("\033[3,0] Hello from the kernel\n");
-  while (1);
-  
-    
-
+  while (1)
+    ;
 }
