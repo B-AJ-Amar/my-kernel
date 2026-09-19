@@ -102,8 +102,15 @@ void tty_nwrite(tty_t *tty, const char *buf, size_t len) {
 void tty_putc(tty_t *tty, char c) { tty->output.putc(c); }
 
 size_t tty_readline(tty_t *tty, char *buf, size_t buf_size) {
-  while (!tty->line_ready)
-    hlt();
+  while (!tty->line_ready) {
+    keyboard_event_t *event = keyboard_pop_event();
+
+    if (event != NULL) {
+      tty_handle_event(tty, event);
+    } else {
+      hlt();
+    }
+  }
 
   size_t n = tty->len;
 

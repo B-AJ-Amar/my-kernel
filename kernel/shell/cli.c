@@ -1,10 +1,12 @@
 #include <kernel/shell/cli.h>
 
 #include <mm/heap/heap.h>
+#include <stdio.h>
 #include <string.h>
 
 typedef struct cli_entry {
   char *name;
+  char *description;
   cli_handler_t handler;
   struct cli_entry *next;
 } cli_entry_t;
@@ -25,8 +27,10 @@ static cli_entry_t *find_command(const char *name) {
   return NULL;
 }
 
-int cli_register(const char *name, cli_handler_t handler) {
-  if (name == NULL || name[0] == '\0' || handler == NULL)
+int cli_register(const char *name, const char *description,
+                 cli_handler_t handler) {
+  if (name == NULL || name[0] == '\0' || description == NULL ||
+      handler == NULL)
     return CLI_ERROR;
 
   if (find_command(name) != NULL)
@@ -37,7 +41,9 @@ int cli_register(const char *name, cli_handler_t handler) {
     return CLI_ERROR;
 
   entry->name = strdup(name);
-  if (entry->name == NULL) {
+  entry->description = strdup(description);
+  if (entry->name == NULL || entry->description == NULL) {
+    kfree(entry->description);
     kfree(entry);
     return CLI_ERROR;
   }
@@ -59,11 +65,30 @@ static char *next_token(char **input) {
     return NULL;
   }
 
-  char *end = token;
-  while (*end != '\0' && *end != ' ' && *end != '\t')
+    char *end = token;
+  char quote = '\0';
+  char *write = token;
+    bool has_delimiter;
+  while (*end != '\0') {
+    if (quote != '\0') {
+      if (*end == quote)
+        quote = '\0';
+      else
+        *write++ = *end;
+    } else if (*end == '\'' || *end == '"') {
+      quote = *end;
+    } else if (*end == ' ' || *end == '\t') {
+      break;
+    } else {
+      *write++ = *end;
+    }
     end++;
+  }
 
-  if (*end != '\0') {
+  has_delimiter = *end != '\0';
+  *write = '\0';
+
+  if (has_delimiter) {
     *end = '\0';
     *input = end + 1;
   } else {
@@ -76,10 +101,23 @@ static char *next_token(char **input) {
 static size_t token_count(const char *input) {
   size_t count = 0;
   bool in_token = false;
+  char quote = '\0';
 
   while (*input != '\0') {
-    if (*input == ' ' || *input == '\t') {
+    if ((*input == ' ' || *input == '\t') && quote == '\0') {
       in_token = false;
+    } else if (*input == '\'' || *input == '"') {
+      if (quote == '\0') {
+        quote = *input;
+        if (!in_token) {
+          in_token = true;
+          count++;
+        }
+      } else {
+        quote = '\0';
+      }
+      if (!in_token)
+        in_token = true;
     } else if (!in_token) {
       in_token = true;
       count++;
@@ -98,8 +136,19 @@ static bool is_short_flag(const char *token) {
   return token[0] == '-' && token[1] != '\0' && token[1] != '-';
 }
 
-int cli_execute(char *input) {
-  if (input == NULL)
+void cli_init(cli_context_t *context) {
+  if (context == NULL)
+    return;
+
+  context->cwd[0] = '/';
+  context->cwd[1] = '\0';
+  context->history = NULL;
+  context->history_count = 0;
+  context->history_capacity = 0;
+}
+
+int cli_execute(cli_context_t *context, char *input) {
+  if (context == NULL || input == NULL)
     return CLI_ERROR;
 
   size_t max_items = token_count(input);
@@ -107,13 +156,13 @@ int cli_execute(char *input) {
     return CLI_ERROR;
 
   char *cursor = input;
-  char *command_name = next_token(&cursor);
-  cli_entry_t *entry = find_command(command_name);
+  char *cmd_name = next_token(&cursor);
+  cli_entry_t *entry = find_command(cmd_name);
   if (entry == NULL)
     return CLI_UNKNOWN_COMMAND;
 
-  cli_command_t command = {
-      .command = command_name,
+  cli_cmd_t command = {
+      .command = cmd_name,
       .flags = kmalloc(max_items * sizeof(cli_flag_t)),
       .flag_count = 0,
       .args = kmalloc(max_items * sizeof(char *)),
@@ -155,13 +204,13 @@ int cli_execute(char *input) {
     command.args[command.arg_count++] = token;
   }
 
-  int result = entry->handler(&command);
+  int result = entry->handler(context, &command);
   kfree(command.flags);
   kfree(command.args);
   return result;
 }
 
-bool cli_has_flag(const cli_command_t *command, char short_name) {
+bool cli_has_flag(const cli_cmd_t *command, char short_name) {
   if (command == NULL)
     return false;
 
@@ -173,7 +222,7 @@ bool cli_has_flag(const cli_command_t *command, char short_name) {
   return false;
 }
 
-bool cli_has_long_flag(const cli_command_t *command, const char *long_name) {
+bool cli_has_long_flag(const cli_cmd_t *command, const char *long_name) {
   if (command == NULL || long_name == NULL)
     return false;
 
@@ -184,4 +233,33 @@ bool cli_has_long_flag(const cli_command_t *command, const char *long_name) {
   }
 
   return false;
+}
+
+void cli_print_help(size_t offset, const char *highlight_color) {
+  size_t count = 0;
+  cli_entry_t *entry = cli_registry;
+
+  while (entry != NULL) {
+    count++;
+    entry = entry->next;
+  }
+
+  cli_entry_t **entries = kmalloc(count * sizeof(cli_entry_t *));
+  if (entries == NULL)
+    return;
+
+  entry = cli_registry;
+  for (size_t i = 0; i < count; i++) {
+    entries[i] = entry;
+    entry = entry->next;
+  }
+
+  for (size_t i = count; i > 0; i--) {
+    size_t index = i - 1;
+    if (index >= offset)
+            printf("%s%s\033[15,0]: %s\n", highlight_color, entries[index]->name,
+              entries[index]->description);
+  }
+
+  kfree(entries);
 }

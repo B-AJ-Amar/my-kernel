@@ -8,6 +8,7 @@
 #include <interupts/pic.h>
 #include <kernel/console.h>
 #include <kernel/shed/shed.h>
+#include <kernel/shell/shell.h>
 #include <kernel/tty.h>
 #include <mm/heap/heap.h>
 #include <mm/mm.h>
@@ -31,14 +32,8 @@ void task_a(void *p) {
 }
 
 void shell(void *p) {
-  keyboard_event_t *event;
-  while (1) {
-    printf("\033[15,0]");
-    while ((event = keyboard_peek_event()) != NULL) {
-      event = keyboard_pop_event();
-      tty_handle_event(&tty0, event);
-    }
-  }
+  shell_init();
+  shell_run(&tty0);
 }
 void kernel(void) {
 
@@ -75,7 +70,7 @@ void kernel(void) {
   shed_init();
   enable_interrupts();
 
-  task_create(task_a, NULL);
+  // task_create(task_a, NULL);
   task_create(shell, NULL);
 
   uintptr_t sp;
