@@ -15,8 +15,6 @@ void fs_init() {
     return;
   }
 
-  printf("Initializing filesystem... ptr: 0x%x\n", root_node);
-
   root_node->type = FS_DIR;
   root_node->parent = NULL;
   root_node->children.items = NULL;
@@ -27,12 +25,14 @@ void fs_init() {
   root_node->capacity = 0;
 
   snprintf(root_node->name, sizeof(root_node->name), "/");
-  fs_create(root_node, FS_DIR, "root");
+  fs_create(root_node, FS_DIR, "core");
+  fs_create(root_node, FS_DIR, "hw");
+  fs_create(root_node, FS_DIR, "mem");
   fs_create(root_node, FS_DIR, "home");
+  fs_create(root_node, FS_DIR, "data");
+  fs_create(root_node, FS_DIR, "tasks");
+  fs_create(root_node, FS_DIR, "term");
   fs_create(root_node, FS_DIR, "bin");
-  fs_create(root_node, FS_DIR, "etc");
-  fs_create(root_node, FS_DIR, "usr");
-  fs_create(root_node, FS_DIR, "var");
   fs_create(root_node, FS_DIR, "tmp");
 }
 

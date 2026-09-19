@@ -80,14 +80,18 @@ void schedule(interupt_registers_t *regs) {
 
 __attribute__((noreturn)) void task_exit(int code) {
   (void)code;
+  __block_thread__();
+}
+
+__attribute__((noreturn)) void __block_thread__(void) {
   if (current_task == NULL)
-    panic("task_exit: no current task");
+    panic("__block_thread__: no current task");
 
   thread_t *next = current_task->next;
   if (next == NULL)
     next = tasks;
   if (next == current_task)
-    panic("No more tasks to run");
+    panic("__block_thread__: no runnable tasks");
 
   task_delete(current_task);
   next->state = THREAD_RUNNING;

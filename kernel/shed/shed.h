@@ -26,6 +26,7 @@ thread_t *task_create(void (*entry)(void *), void *params);
 void schedule(interupt_registers_t *regs);
 void task_exit(int code) __attribute__((noreturn));
 thread_t *task_get_current(void);
+void __block_thread__(void) __attribute__((noreturn));
 
 void task_wrapper(void (*entry)(void *), void *params);
 

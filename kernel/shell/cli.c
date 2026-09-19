@@ -29,8 +29,7 @@ static cli_entry_t *find_command(const char *name) {
 
 int cli_register(const char *name, const char *description,
                  cli_handler_t handler) {
-  if (name == NULL || name[0] == '\0' || description == NULL ||
-      handler == NULL)
+  if (name == NULL || name[0] == '\0' || description == NULL || handler == NULL)
     return CLI_ERROR;
 
   if (find_command(name) != NULL)
@@ -65,10 +64,10 @@ static char *next_token(char **input) {
     return NULL;
   }
 
-    char *end = token;
+  char *end = token;
   char quote = '\0';
   char *write = token;
-    bool has_delimiter;
+  bool has_delimiter;
   while (*end != '\0') {
     if (quote != '\0') {
       if (*end == quote)
@@ -237,10 +236,15 @@ bool cli_has_long_flag(const cli_cmd_t *command, const char *long_name) {
 
 void cli_print_help(size_t offset, const char *highlight_color) {
   size_t count = 0;
+  size_t max_name_width = 0;
   cli_entry_t *entry = cli_registry;
 
   while (entry != NULL) {
+    size_t name_width = strlen(entry->name);
+
     count++;
+    if (name_width > max_name_width)
+      max_name_width = name_width;
     entry = entry->next;
   }
 
@@ -256,9 +260,15 @@ void cli_print_help(size_t offset, const char *highlight_color) {
 
   for (size_t i = count; i > 0; i--) {
     size_t index = i - 1;
-    if (index >= offset)
-            printf("%s%s\033[15,0]: %s\n", highlight_color, entries[index]->name,
-              entries[index]->description);
+    if (index >= offset) {
+      size_t name_width = strlen(entries[index]->name);
+
+      printf("%s%s\033[15,0]", highlight_color, entries[index]->name);
+      for (size_t spaces = name_width; spaces < max_name_width + 2;
+           spaces++)
+        putchar(' ');
+      printf("%s\n", entries[index]->description);
+    }
   }
 
   kfree(entries);

@@ -1,11 +1,11 @@
 #include <fs/fs.h>
-#include <kernel/shell/cmd/cmd.h>
-#include <kernel/shell/utils.h>
 #include <kernel/console.h>
+#include <kernel/shell/cmd/cmd.h>
+#include <kernel/shell/shell.h>
+#include <kernel/shell/utils.h>
 #include <mm/heap/heap.h>
 #include <stdio.h>
 #include <string.h>
-#include <kernel/shell/shell.h>
 
 static bool resolve_parent(const cli_context_t *context, const char *target,
                            fs_path_t **parent, char *name, size_t name_size) {
@@ -55,7 +55,7 @@ static size_t ls_entry_width(const fs_node_t *node) {
 
 static void ls_print_entry(const fs_node_t *node) {
   if (node->type == FS_DIR)
-    printf("%s%s/\033[15,0]", shell_highlight_color,node->name);
+    printf("%s%s/\033[15,0]", shell_highlight_color, node->name);
   else
     printf("%s", node->name);
 }
@@ -279,8 +279,7 @@ int cmd_write(cli_context_t *context, cli_cmd_t *command) {
       return CLI_ERROR;
     }
   } else {
-    if (!resolve_parent(context, command->args[0], &parent, name,
-                        sizeof(name)))
+    if (!resolve_parent(context, command->args[0], &parent, name, sizeof(name)))
       return CLI_ERROR;
     if (!fs_create(parent->tail_node, FS_FILE, name)) {
       kfree(parent->path);
@@ -295,8 +294,8 @@ int cmd_write(cli_context_t *context, cli_cmd_t *command) {
   }
 
   length = strlen(command->args[1]);
-  result = fs_write(resolved->tail_node, (const uint8_t *)command->args[1],
-                    length);
+  result =
+      fs_write(resolved->tail_node, (const uint8_t *)command->args[1], length);
   kfree(resolved->path);
   kfree(resolved);
   return result ? CLI_SUCCESS : CLI_ERROR;

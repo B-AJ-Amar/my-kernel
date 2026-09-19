@@ -33,8 +33,7 @@ int cmd_help(cli_context_t *context, cli_cmd_t *command) {
 
   (void)context;
   if (command->arg_count > 1 ||
-      (command->arg_count == 1 &&
-       !parse_offset(command->args[0], &offset)))
+      (command->arg_count == 1 && !parse_offset(command->args[0], &offset)))
     return CLI_ERROR;
 
   cli_print_help(offset, shell_highlight_color);

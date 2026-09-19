@@ -54,39 +54,26 @@ void kernel(void) {
       .nwrite = console_nwrite,
       .move_cursor = console_move_cursor,
   };
-
   tty_init(&tty0, local_console_output);
+
 
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
+  printf("[\033[2,0]x\033[15,0]] Memory management initialized\n");
   fs_init();
-  // fs_touch("/", "test_file.txt");
-  // fs_mkdir("/", "amar_test");
-  // fs_base_node_t *list = fs_ls("/");
-  // for (size_t i = 0; list[i].name[0] != '\0'; i++) {
-  //   char *color = (list[i].type == FS_DIR) ? "\033[3,0]m" : "\033[15,0]";
-  //   printf("fs_ls: %s%s\n", color, list[i].name );
-  // }
+  printf("[\033[2,0]x\033[15,0]] File system initialized\n");
+
   shed_init();
+  printf("[\033[2,0]x\033[15,0]] Scheduler initialized\n");
   enable_interrupts();
 
-  // task_create(task_a, NULL);
+
+
+  printf("[\033[2,0]x\033[15,0]]kernel address: 0x%x\n", boot->kernel_addr);
+
+  console_clear();
   task_create(shell, NULL);
+  // task_create(task_a, NULL);
 
-  uintptr_t sp;
-  __asm__ volatile("mov %%esp, %0" : "=r"(sp));
-  printf("Current stack pointer: 0x%lx\n", sp);
-
-  uint32_t *array = (uint32_t *)kmalloc(100);
-  kfree(array);
-
-  printf("kernel address: 0x%x\n", boot->kernel_addr);
-
-  printf("stack bottom: 0x%x\n", (uintptr_t)&__stack_bottom);
-  printf("stack top:    0x%x\n", (uintptr_t)&__stack_top);
-  printf("\033[1,4] Hello from the kernel\n");
-  printf("\033[2,0] Hello from the kernel\n");
-  printf("\033[3,0] Hello from the kernel\n");
-  while (1)
-    ;
+  __block_thread__();
 }
