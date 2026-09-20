@@ -94,3 +94,32 @@ int cmd_uptime(cli_context_t *context, cli_cmd_t *command) {
   printf("Uptime: %u seconds\n", (unsigned int)(ticks / PIT_FREQUENCY));
   return CLI_SUCCESS;
 }
+
+int cmd_sleep(cli_context_t *context, cli_cmd_t *command) {
+  uint32_t seconds = 0;
+  uint64_t start;
+  uint64_t duration;
+
+  (void)context;
+  if (command->arg_count != 1)
+    return CLI_ERROR;
+
+  keyboard_take_interrupt();
+
+  for (size_t i = 0; command->args[0][i] != '\0'; i++) {
+    if (command->args[0][i] < '0' || command->args[0][i] > '9')
+      return CLI_ERROR;
+    seconds = seconds * 10 + (uint32_t)(command->args[0][i] - '0');
+  }
+
+  start = pit_get_ticks();
+  duration = (uint64_t)seconds * PIT_FREQUENCY;
+  while (pit_get_ticks() - start < duration) {
+    if (keyboard_take_interrupt()) {
+      printf("\nInterrupted ^C\n");
+      return CLI_ERROR;
+    }
+    hlt();
+  }
+  return CLI_SUCCESS;
+}

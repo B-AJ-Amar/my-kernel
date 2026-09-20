@@ -21,10 +21,14 @@ typedef struct {
   uint16_t len;
   bool echo;
   bool line_ready;
+  char **history;
+  size_t history_count;
+  size_t history_index;
   tty_output_t output;
 } tty_t;
 
 void tty_init(tty_t *tty, tty_output_t output);
+void tty_set_history(tty_t *tty, char **history, size_t history_count);
 
 void tty_handle_event(tty_t *tty, const keyboard_event_t *event);
 

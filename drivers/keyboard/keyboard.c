@@ -15,6 +15,7 @@ static const keyboard_layout_t *current_layout;
 static keyboard_state_t current_state = {0};
 static keyboard_driver_t *current_driver;
 static keyboard_event_queue event_queue;
+static bool interrupt_pending;
 // todo: add available layouts array to make crtl + alt to change the layouts
 void keyboard_init(kb_backend_t backend, const keyboard_layout_t *layout) {
   current_state.left_shift = false;
@@ -30,6 +31,7 @@ void keyboard_init(kb_backend_t backend, const keyboard_layout_t *layout) {
   event_queue.head = 0;
   event_queue.tail = 0;
   event_queue.capacity = KB_EVENT_Q_SIZE;
+  interrupt_pending = false;
 
   // todo: add more backends
   if (backend == KB_BACKEND_PS2) {
@@ -109,6 +111,12 @@ bool keyboard_alt(void) {
 
 bool keyboard_caps_lock(void) { return current_state.caps_lock; }
 
+bool keyboard_take_interrupt(void) {
+  bool pending = interrupt_pending;
+  interrupt_pending = false;
+  return pending;
+}
+
 static const char *keyboard_layout_get_current_keys() {
   if (keyboard_shift() || keyboard_caps_lock()) {
     return current_layout->keys_upper;
@@ -152,6 +160,10 @@ void keyboard_handle_event(uint8_t key_code, keyboard_event_type_t type) {
     default:
       break;
     }
+  }
+  if (type == KEY_PRESS && keyboard_ctrl() && key_code == C_KEY) {
+    interrupt_pending = true;
+    return;
   }
   keyboard_push_event(event);
 }
