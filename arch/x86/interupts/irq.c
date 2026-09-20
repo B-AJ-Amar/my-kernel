@@ -27,4 +27,6 @@ static void __irq_keyboard_handler__() {
   }
 }
 
-static void __irq_timer_handler__(interupt_registers_t *regs) { pit_interrupt_handler(regs); }
+static void __irq_timer_handler__(interupt_registers_t *regs) {
+  pit_interrupt_handler(regs);
+}

@@ -48,6 +48,7 @@ console_driver_t vga_console = {.putchar = vga_putchar,
                                 .get_cursor = vga_get_cursor,
                                 .set_color = vga_set_color,
                                 .move_cursor = vga_move_cursor,
+                                .set_cursor_visible = vga_set_cursor_visible,
                                 .getchar = NULL};
 
 void vga_init(void) {
@@ -127,6 +128,13 @@ void enable_cursor(uint8_t cursor_start, uint8_t cursor_end) {
 
   outb(0x3D4, 0x0B);
   outb(0x3D5, (inb(0x3D5) & 0xE0) | cursor_end);
+}
+
+void vga_set_cursor_visible(bool visible) {
+  if (visible)
+    enable_cursor(0, 15);
+  else
+    disable_cursor();
 }
 
 void scroll(void) {

@@ -133,6 +133,17 @@ void pmm_free_frame(uint32_t address) {
   bitmap_clear(frame);
 }
 
+uint64_t pmm_get_free_memory(void) {
+  uint64_t free_frames = 0;
+
+  for (uint32_t frame = 0; frame < MAX_FRAMES; frame++) {
+    if (!bitmap_test(frame))
+      free_frames++;
+  }
+
+  return free_frames * FRAME_SIZE;
+}
+
 uintptr_t pmm_alloc_specific_frame(uintptr_t address) {
   if (address >= MAX_PHYS_MEMORY) {
     return 0;

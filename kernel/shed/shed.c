@@ -7,7 +7,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-// TODO: add a locking mechanism on create task to avoid interupts and race conditions
+// TODO: add a locking mechanism on create task to avoid interupts and race
+// conditions
 static thread_t *tasks = NULL;
 static uint32_t next_tid = 0;
 static thread_t *current_task = NULL;
@@ -35,22 +36,22 @@ thread_t *task_create(void (*entry)(void *), void *params) {
 
   uint32_t stack_top = task_alloc_stack();
 
-  // ? 52 bytes = 8 pushad + 2 int_no/err_code + 3 eip/cs/eflags 
+  // ? 52 bytes = 8 pushad + 2 int_no/err_code + 3 eip/cs/eflags
   uint32_t *frame = (uint32_t *)(stack_top - 52);
 
-  frame[0] = 0;                    // edi                     
-  frame[1] = 0;                    // esi                     
-  frame[2] = 0;                    // ebp                     
-  frame[3] = 0;                    // esp (ignored by popad)  
-  frame[4] = (uint32_t)params;     // ebx -> 2nd arg          
-  frame[5] = 0;                    // edx                     
-  frame[6] = 0;                    // ecx                     
-  frame[7] = (uint32_t)entry;      // eax -> 1st arg          
-  frame[8] = 0;                    // int_no                  
-  frame[9] = 0;                    // err_code                
-  frame[10] = (uint32_t)task_stub; // eip                     
-  frame[11] = CODE_SEG;            // cs                      
-  frame[12] = DEFAULT_EFLAGS;      // eflags                  
+  frame[0] = 0;                    // edi
+  frame[1] = 0;                    // esi
+  frame[2] = 0;                    // ebp
+  frame[3] = 0;                    // esp (ignored by popad)
+  frame[4] = (uint32_t)params;     // ebx -> 2nd arg
+  frame[5] = 0;                    // edx
+  frame[6] = 0;                    // ecx
+  frame[7] = (uint32_t)entry;      // eax -> 1st arg
+  frame[8] = 0;                    // int_no
+  frame[9] = 0;                    // err_code
+  frame[10] = (uint32_t)task_stub; // eip
+  frame[11] = CODE_SEG;            // cs
+  frame[12] = DEFAULT_EFLAGS;      // eflags
 
   task->sp = (uint32_t)frame;
 
@@ -79,14 +80,18 @@ void schedule(interupt_registers_t *regs) {
 
 __attribute__((noreturn)) void task_exit(int code) {
   (void)code;
+  __block_thread__();
+}
+
+__attribute__((noreturn)) void __block_thread__(void) {
   if (current_task == NULL)
-    panic("task_exit: no current task");
+    panic("__block_thread__: no current task");
 
   thread_t *next = current_task->next;
   if (next == NULL)
     next = tasks;
   if (next == current_task)
-    panic("No more tasks to run");
+    panic("__block_thread__: no runnable tasks");
 
   task_delete(current_task);
   next->state = THREAD_RUNNING;

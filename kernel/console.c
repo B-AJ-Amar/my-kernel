@@ -23,6 +23,11 @@ void console_set_cursor(size_t row, size_t col) {
   }
 }
 
+void console_set_cursor_visible(bool visible) {
+  if (active_console && active_console->set_cursor_visible)
+    active_console->set_cursor_visible(visible);
+}
+
 void console_get_cursor(size_t *row, size_t *col) {
   if (active_console && active_console->get_cursor) {
     active_console->get_cursor(row, col);

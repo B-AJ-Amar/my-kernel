@@ -1,6 +1,6 @@
 
 #ifndef STDBOOL_H
-#define STDBOOL_h
+#define STDBOOL_H
 
 #define bool _Bool
 #ifndef true

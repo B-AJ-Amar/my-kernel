@@ -3,10 +3,12 @@
 #include <drivers/keyboard/layout.h>
 #include <drivers/ps2/controller.h>
 #include <drivers/vga/vga.h>
+#include <fs/fs.h>
 #include <interupts/idt.h>
 #include <interupts/pic.h>
 #include <kernel/console.h>
 #include <kernel/shed/shed.h>
+#include <kernel/shell/shell.h>
 #include <kernel/tty.h>
 #include <mm/heap/heap.h>
 #include <mm/mm.h>
@@ -18,9 +20,10 @@
 extern char __stack_bottom;
 extern char __stack_top;
 
-void shell(void);
+static tty_t tty0;
+
 void task_a(void *p) {
-    printf("\033[2,0] Task A started\n");
+  printf("\033[2,0] Task A started\n");
   while (1) {
     printf("\033[2,0]A");
     for (volatile int i = 0; i < 1000000; i++)
@@ -28,13 +31,9 @@ void task_a(void *p) {
   }
 }
 
-void task_b(void *p) {
-    printf("\033[3,0] Task B started\n");
-  while (1) {
-    printf("\033[3,0]B");
-    for (volatile int i = 0; i < 1000000; i++)
-      ;
-  }
+void shell(void *p) {
+  shell_init();
+  shell_run(&tty0);
 }
 void kernel(void) {
 
@@ -49,49 +48,29 @@ void kernel(void) {
 
   ps2_init();
   keyboard_init(KB_BACKEND_PS2, &layout_us);
-
-  tty_init(local_keyboard_input, local_console_output);
+  tty_output_t local_console_output = {
+      .putc = console_putchar,
+      .write = console_write,
+      .nwrite = console_nwrite,
+      .move_cursor = console_move_cursor,
+  };
+  tty_init(&tty0, local_console_output);
 
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
+  printf("[\033[2,0]x\033[15,0]] Memory management initialized\n");
+  fs_init();
+  printf("[\033[2,0]x\033[15,0]] File system initialized\n");
 
   shed_init();
+  printf("[\033[2,0]x\033[15,0]] Scheduler initialized\n");
   enable_interrupts();
-  task_create(task_a, NULL);
-  task_create(task_b, NULL);
 
+  printf("[\033[2,0]x\033[15,0]]kernel address: 0x%x\n", boot->kernel_addr);
 
-  uintptr_t sp;
-  __asm__ volatile("mov %%esp, %0" : "=r"(sp));
-  printf("Current stack pointer: 0x%lx\n", sp);
+  console_clear();
+  task_create(shell, NULL);
+  // task_create(task_a, NULL);
 
-  uint32_t *array = (uint32_t *)kmalloc(100);
-  kfree(array);
-
-  printf("kernel address: 0x%x\n", boot->kernel_addr);
-
-  printf("stack bottom: 0x%x\n", (uintptr_t)&__stack_bottom);
-  printf("stack top:    0x%x\n", (uintptr_t)&__stack_top);
-  printf("\033[1,4] Hello from the kernel\n");
-  printf("\033[2,0] Hello from the kernel\n");
-  printf("\033[3,0] Hello from the kernel\n");
-  while (1) {
-    printf("\033[1,0]k");
-    for (volatile int i = 0; i < 1000000; i++);
-  }
-    
-
-
-}
-
-void shell(void) {
-  keyboard_event_t *event;
-  while (1) {
-
-    // tty process
-    while (tty_check_events()) {
-      event = tty_read_event();
-      tty_handle_event(event);
-    }
-  }
+  __block_thread__();
 }

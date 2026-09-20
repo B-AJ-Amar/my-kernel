@@ -13,6 +13,7 @@ void console_nwrite(const char *str, size_t len);
 void console_move_cursor(int offset);
 void console_clear(void);
 void console_set_cursor(size_t row, size_t col);
+void console_set_cursor_visible(bool visible);
 void console_get_cursor(size_t *row, size_t *col);
 void console_set_color(int fg, int bg);
 
@@ -22,6 +23,7 @@ typedef struct console_driver_t {
   void (*nwrite)(const char *, size_t);
   void (*clear)(void);
   void (*set_cursor)(size_t, size_t);
+  void (*set_cursor_visible)(bool);
   void (*get_cursor)(size_t *row, size_t *col);
   void (*set_color)(int fg, int bg);
   int (*getchar)(void);

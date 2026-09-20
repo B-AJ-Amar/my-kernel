@@ -18,5 +18,6 @@ void vga_console_set_color(int fg, int bg);
 void vga_set_cursor(size_t row, size_t col);
 void vga_get_cursor(size_t *row, size_t *col);
 void vga_move_cursor(int offset);
+void vga_set_cursor_visible(bool visible);
 
 #endif

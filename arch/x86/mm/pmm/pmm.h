@@ -35,5 +35,6 @@ uint32_t pmm_alloc_frame(void);
 uintptr_t pmm_alloc_specific_frame(uintptr_t address);
 uint32_t pmm_alloc_empty_frame(void);
 void pmm_free_frame(uint32_t address);
+uint64_t pmm_get_free_memory(void);
 
 #endif

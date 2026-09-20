@@ -40,3 +40,5 @@ void pit_wait(uint32_t ms) {
 }
 
 void pit_wait_sec(uint32_t sec) { pit_wait(sec * 1000); }
+
+uint64_t pit_get_ticks(void) { return pit_ticks; }

@@ -9,8 +9,8 @@
 #define PIT_DEFAULT_FREQUENCY 1193182
 #define PIT_FREQUENCY 100
 // divisor = PIT_DEFAULT_FREQUENCY / PIT_FREQUENCY
-#include <stdint.h>
 #include <interupts/interupt.h>
+#include <stdint.h>
 
 /*
 0x36 = 00 11 011 0
@@ -32,5 +32,6 @@ void pit_init(uint32_t frequency);
 void pit_interrupt_handler(interupt_registers_t *regs);
 void pit_wait(uint32_t ms);
 void pit_wait_sec(uint32_t sec);
+uint64_t pit_get_ticks(void);
 
 #endif
