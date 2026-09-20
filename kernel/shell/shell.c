@@ -29,6 +29,7 @@ void shell_init(void) {
   cli_register("uptime", "show system uptime", cmd_uptime);
   cli_register("rename", "rename a file or directory", cmd_rename);
   cli_register("move", "move a file or directory", cmd_move);
+  cli_register("sleep", "sleep for seconds", cmd_sleep);
   cli_register("history", "show command history", cmd_history);
   cli_register("help", "show available commands", cmd_help);
 }
@@ -64,6 +65,7 @@ void shell_run(tty_t *tty) {
   while (1) {
     printf("%s[ %s%s%s ] >\033[15,0] ", shell_highlight_color, white,
            shell_context.cwd, shell_highlight_color);
+    tty_set_history(tty, shell_context.history, shell_context.history_count);
     tty_readline(tty, input, sizeof(input));
     shell_add_history(input);
 

@@ -176,6 +176,8 @@ int editor_run(fs_node_t *file) {
     size_t previous_top_line = top_line;
     size_t previous_left_column = left_column;
 
+    keyboard_take_interrupt();
+
     cursor_line = editor_line_number(text, cursor);
     cursor_column = editor_line_column(text, cursor);
     if (cursor_line < top_line)

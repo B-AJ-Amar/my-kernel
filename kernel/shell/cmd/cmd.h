@@ -22,5 +22,6 @@ int cmd_uptime(cli_context_t *context, cli_cmd_t *command);
 int cmd_tree(cli_context_t *context, cli_cmd_t *command);
 int cmd_rename(cli_context_t *context, cli_cmd_t *command);
 int cmd_move(cli_context_t *context, cli_cmd_t *command);
+int cmd_sleep(cli_context_t *context, cli_cmd_t *command);
 
 #endif

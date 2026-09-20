@@ -12,7 +12,37 @@ void tty_init(tty_t *tty, tty_output_t output) {
   tty->buffer[0] = '\0';
   tty->line_ready = false;
   tty->echo = true;
+  tty->history = NULL;
+  tty->history_count = 0;
+  tty->history_index = 0;
   tty->output = output;
+}
+
+void tty_set_history(tty_t *tty, char **history, size_t history_count) {
+  tty->history = history;
+  tty->history_count = history_count;
+  tty->history_index = history_count;
+}
+
+static void tty_replace_line(tty_t *tty, const char *line) {
+  size_t length = strlen((char *)line);
+  size_t old_length = tty->len;
+
+  if (length >= TTY_BUFFER_SIZE)
+    length = TTY_BUFFER_SIZE - 1;
+  while (tty->cursor > 0) {
+    tty->output.move_cursor(-1);
+    tty->cursor--;
+  }
+  memcpy(tty->buffer, line, length);
+  tty->buffer[length] = '\0';
+  tty->len = (uint16_t)length;
+  tty->cursor = (uint16_t)length;
+  tty->output.write(tty->buffer);
+  for (size_t i = length; i < old_length; i++)
+    tty->output.putc(' ');
+  for (size_t i = length; i < old_length; i++)
+    tty->output.move_cursor(-1);
 }
 
 void tty_handle_event(tty_t *tty, const keyboard_event_t *event) {
@@ -22,6 +52,21 @@ void tty_handle_event(tty_t *tty, const keyboard_event_t *event) {
   char c = event->character;
 
   switch (event->key) {
+  case UP_ARROW_KEY:
+    if (tty->history != NULL && tty->history_index > 0) {
+      tty->history_index--;
+      tty_replace_line(tty, tty->history[tty->history_index]);
+    }
+    break;
+  case DOWN_ARROW_KEY:
+    if (tty->history != NULL && tty->history_index < tty->history_count) {
+      tty->history_index++;
+      if (tty->history_index == tty->history_count)
+        tty_replace_line(tty, "");
+      else
+        tty_replace_line(tty, tty->history[tty->history_index]);
+    }
+    break;
   case ENTER_KEY:
     tty->line_ready = true;
 
@@ -124,6 +169,7 @@ size_t tty_readline(tty_t *tty, char *buf, size_t buf_size) {
   tty->cursor = 0;
   tty->buffer[0] = '\0';
   tty->line_ready = false;
+  tty->history_index = tty->history_count;
 
   return n;
 }

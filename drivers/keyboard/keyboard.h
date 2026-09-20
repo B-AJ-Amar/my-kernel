@@ -64,4 +64,5 @@ bool keyboard_shift(void);
 bool keyboard_ctrl(void);
 bool keyboard_alt(void);
 bool keyboard_caps_lock(void);
+bool keyboard_take_interrupt(void);
 #endif
