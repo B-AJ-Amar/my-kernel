@@ -1,3 +1,9 @@
+## [0.5.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.4.0...v0.5.0) (2026-09-20)
+
+### Features
+
+* add ctrl +c interupt ([144fbe4](https://github.com/B-AJ-Amar/my-kernel/commit/144fbe43a0b08f6e190b9f1b417f24c8537c68b4))
+
 ## [0.4.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.3.0...v0.4.0) (2026-09-20)
 
 ### Features
