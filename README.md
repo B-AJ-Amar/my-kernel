@@ -68,29 +68,29 @@ The project is being developed incrementally. Each subsystem is implemented from
 * [x] Virtual memory management (VMM)
 * [x] Kernel heap
 
-### TODO
-
 #### Scheduling
 
-* [ ] Implement the kernel scheduler
-* [ ] Implement task/thread management
-* [ ] Implement context switching
-* [ ] Support multiple kernel threads
-* [ ] Integrate scheduling with the timer
+* [x] Implement the kernel scheduler
+* [x] Implement task/thread management
+* [x] Implement context switching
+* [x] Support multiple kernel threads
+* [x] Integrate scheduling with the timer
 
 #### Shell & Terminal
 
-* [ ] Implement the shell
-* [ ] Implement command parsing and execution
+* [x] Implement the shell
+* [x] Implement command parsing and execution
 * [ ] Support multiple terminals
 * [ ] Support multiple independent shell sessions
 
 #### Filesystem
 
-* [ ] Design the filesystem interface
-* [ ] Implement a filesystem
-* [ ] Implement file and directory operations
-* [ ] Implement a file manager
+* [x] Design the filesystem interface
+* [x] Implement a filesystem
+* [x] Implement file and directory operations
+* [x] Implement a file manager
+
+### TODO
 
 #### Userspace
 
