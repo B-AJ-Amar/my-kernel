@@ -17,8 +17,8 @@ KERNEL_ADDR_PM equ 0x100000
 KERNEL_RM_SP equ 0x9fff
 
 ; this will be updated by the build script
-KERNEL_SIZE equ 37856
-KERNEL_SECTORS equ 74
+KERNEL_SIZE equ 41952
+KERNEL_SECTORS equ 82
 
 BOOT_INFO_ADDR equ 0x7000
 

@@ -28,7 +28,17 @@ void fs_init() {
   fs_create(root_node, FS_DIR, "core");
   fs_create(root_node, FS_DIR, "hw");
   fs_create(root_node, FS_DIR, "mem");
+
   fs_create(root_node, FS_DIR, "home");
+  fs_mkdir("/home", "amar");
+  fs_mkdir("/home/amar", "desktop");
+  fs_mkdir("/home/amar", "documents");
+  fs_mkdir("/home/amar", "downloads");
+  fs_mkdir("/home/amar", "notes");
+  fs_mkdir("/home/amar/notes", "personal");
+  fs_mkdir("/home/amar/notes", "work");
+  fs_mkdir("/home/amar", "pictures");
+
   fs_create(root_node, FS_DIR, "data");
   fs_create(root_node, FS_DIR, "tasks");
   fs_create(root_node, FS_DIR, "term");

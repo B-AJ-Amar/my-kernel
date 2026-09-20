@@ -264,8 +264,7 @@ void cli_print_help(size_t offset, const char *highlight_color) {
       size_t name_width = strlen(entries[index]->name);
 
       printf("%s%s\033[15,0]", highlight_color, entries[index]->name);
-      for (size_t spaces = name_width; spaces < max_name_width + 2;
-           spaces++)
+      for (size_t spaces = name_width; spaces < max_name_width + 2; spaces++)
         putchar(' ');
       printf("%s\n", entries[index]->description);
     }

@@ -14,7 +14,7 @@ void shell_init(void) {
   cli_init(&shell_context);
   cli_register("pwd", "print the current directory", cmd_pwd);
   cli_register("go", "change the current directory", cmd_cd);
-  cli_register("list", "list directory contents", cmd_ls);
+  cli_register("ls", "list directory contents", cmd_ls);
   cli_register("clear", "clear the console", cmd_clear);
   cli_register("nwfile", "create an empty file", cmd_touch);
   cli_register("nwdir", "create a directory", cmd_mkdir);
@@ -22,6 +22,7 @@ void shell_init(void) {
   cli_register("rmdir", "remove an empty directory", cmd_rmdir);
   cli_register("read", "read file", cmd_cat);
   cli_register("write", "write quoted content to a file", cmd_write);
+  cli_register("edit", "open the text editor", cmd_edit);
   cli_register("history", "show command history", cmd_history);
   cli_register("help", "show available commands", cmd_help);
 }

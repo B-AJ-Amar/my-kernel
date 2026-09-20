@@ -1,4 +1,5 @@
 #include <fs/fs.h>
+#include <kernel/bins/editor.h>
 #include <kernel/console.h>
 #include <kernel/shell/cmd/cmd.h>
 #include <kernel/shell/shell.h>
@@ -299,4 +300,51 @@ int cmd_write(cli_context_t *context, cli_cmd_t *command) {
   kfree(resolved->path);
   kfree(resolved);
   return result ? CLI_SUCCESS : CLI_ERROR;
+}
+
+int cmd_edit(cli_context_t *context, cli_cmd_t *command) {
+  fs_path_t *resolved;
+  fs_path_t *parent;
+  char name[MAX_NAME_LENGTH];
+  int result;
+
+  if (command->arg_count != 1)
+    return CLI_ERROR;
+
+  resolved = resolve_target(context, command->args[0]);
+  if (resolved != NULL && resolved->tail_node->type != FS_FILE) {
+    kfree(resolved->path);
+    kfree(resolved);
+    return CLI_ERROR;
+  }
+
+  if (resolved == NULL) {
+    if (!resolve_parent(context, command->args[0], &parent, name, sizeof(name)))
+      return CLI_ERROR;
+    if (!fs_create(parent->tail_node, FS_FILE, name)) {
+      kfree(parent->path);
+      kfree(parent);
+      return CLI_ERROR;
+    }
+    kfree(parent->path);
+    kfree(parent);
+    resolved = resolve_target(context, command->args[0]);
+  }
+
+  if (resolved == NULL) {
+    return CLI_ERROR;
+  }
+
+  if (resolved->tail_node->type != FS_FILE) {
+    if (resolved != NULL) {
+      kfree(resolved->path);
+      kfree(resolved);
+    }
+    return CLI_ERROR;
+  }
+
+  result = editor_run(resolved->tail_node);
+  kfree(resolved->path);
+  kfree(resolved);
+  return result == 0 ? CLI_SUCCESS : CLI_ERROR;
 }

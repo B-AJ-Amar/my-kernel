@@ -56,7 +56,6 @@ void kernel(void) {
   };
   tty_init(&tty0, local_console_output);
 
-
   boot_info_t *boot = (boot_info_t *)BOOT_INFO_ADDR;
   mm_init(boot, (uintptr_t)&__stack_top, (uintptr_t)&__stack_bottom);
   printf("[\033[2,0]x\033[15,0]] Memory management initialized\n");
@@ -66,8 +65,6 @@ void kernel(void) {
   shed_init();
   printf("[\033[2,0]x\033[15,0]] Scheduler initialized\n");
   enable_interrupts();
-
-
 
   printf("[\033[2,0]x\033[15,0]]kernel address: 0x%x\n", boot->kernel_addr);
 
