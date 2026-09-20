@@ -1,3 +1,23 @@
+## [0.4.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.3.0...v0.4.0) (2026-09-20)
+
+### Features
+
+* add editor ([ba70f54](https://github.com/B-AJ-Amar/my-kernel/commit/ba70f54341294b68b4abc15ee3c8c41bb55e5b84))
+* add in memory file system ([9912402](https://github.com/B-AJ-Amar/my-kernel/commit/9912402ea79ecd5bd4ddd22ad841f326aac537b5))
+* add shell ([7656615](https://github.com/B-AJ-Amar/my-kernel/commit/765661592b4fb2c397bbd95e1d78b962e8f1bb0b))
+* **shell:** add cli ([8c2574f](https://github.com/B-AJ-Amar/my-kernel/commit/8c2574fafc577eeff4c520cb93b01ae1424afc85))
+* **shell:** add cmds: print, info, uptime, rename,move ([2a7f347](https://github.com/B-AJ-Amar/my-kernel/commit/2a7f347c3bb189b6483b26f3789052d01fa264cb))
+
+### Bug Fixes
+
+* **boot:** disk read problem ([3edfce3](https://github.com/B-AJ-Amar/my-kernel/commit/3edfce378690570fd395dde3b99388ab1b09deca))
+* page fault ([5f308bc](https://github.com/B-AJ-Amar/my-kernel/commit/5f308bca8ddaff71cba63a840560f720c18267ef))
+
+### Refactoring
+
+* tty ([978e188](https://github.com/B-AJ-Amar/my-kernel/commit/978e188d4f19ab2a03913965def0b9729765f078))
+* update filesystem initialization and command registration ([06d9963](https://github.com/B-AJ-Amar/my-kernel/commit/06d9963e9f011875358d7a10d4918851c4a3e028))
+
 ## [0.3.0](https://github.com/B-AJ-Amar/my-kernel/compare/v0.2.0...v0.3.0) (2026-09-12)
 
 ### Features
