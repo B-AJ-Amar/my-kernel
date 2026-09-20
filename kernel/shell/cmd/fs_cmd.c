@@ -50,6 +50,25 @@ static fs_path_t *resolve_target(const cli_context_t *context,
   return fs_resolve_path(path);
 }
 
+static void print_tree_node(fs_node_t *node, bool *last_nodes, size_t depth) {
+  for (size_t i = 0; i < depth; i++)
+    printf("%s", last_nodes[i] ? "   " : "|  ");
+  if (depth > 0)
+    printf("|-- ");
+
+  if (node->type == FS_DIR)
+    printf("%s%s/\033[15,0]\n", shell_highlight_color, node->name);
+  else
+    printf("%s\n", node->name);
+
+  if (node->type == FS_DIR) {
+    for (size_t i = 0; i < node->children.count; i++) {
+      last_nodes[depth] = i + 1 == node->children.count;
+      print_tree_node(node->children.items[i], last_nodes, depth + 1);
+    }
+  }
+}
+
 static size_t ls_entry_width(const fs_node_t *node) {
   return strlen((char *)node->name) + (node->type == FS_DIR ? 1 : 0);
 }
@@ -347,4 +366,69 @@ int cmd_edit(cli_context_t *context, cli_cmd_t *command) {
   kfree(resolved->path);
   kfree(resolved);
   return result == 0 ? CLI_SUCCESS : CLI_ERROR;
+}
+
+int cmd_tree(cli_context_t *context, cli_cmd_t *command) {
+  const char *target = command->arg_count == 0 ? "." : command->args[0];
+  fs_path_t *resolved;
+  bool last_nodes[32] = {false};
+
+  if (command->arg_count > 1)
+    return CLI_ERROR;
+  resolved = resolve_target(context, target);
+  if (resolved == NULL || resolved->tail_node->type != FS_DIR) {
+    if (resolved != NULL) {
+      kfree(resolved->path);
+      kfree(resolved);
+    }
+    return CLI_ERROR;
+  }
+  print_tree_node(resolved->tail_node, last_nodes, 0);
+  kfree(resolved->path);
+  kfree(resolved);
+  return CLI_SUCCESS;
+}
+
+int cmd_rename(cli_context_t *context, cli_cmd_t *command) {
+  fs_path_t *resolved;
+  bool result;
+
+  if (command->arg_count != 2)
+    return CLI_ERROR;
+  resolved = resolve_target(context, command->args[0]);
+  if (resolved == NULL)
+    return CLI_ERROR;
+  result = fs_rename(resolved->tail_node, command->args[1]);
+  kfree(resolved->path);
+  kfree(resolved);
+  return result ? CLI_SUCCESS : CLI_ERROR;
+}
+
+int cmd_move(cli_context_t *context, cli_cmd_t *command) {
+  fs_path_t *source;
+  fs_path_t *destination;
+  bool result;
+
+  if (command->arg_count != 2)
+    return CLI_ERROR;
+  source = resolve_target(context, command->args[0]);
+  destination = resolve_target(context, command->args[1]);
+  if (source == NULL || destination == NULL ||
+      destination->tail_node->type != FS_DIR) {
+    if (source != NULL) {
+      kfree(source->path);
+      kfree(source);
+    }
+    if (destination != NULL) {
+      kfree(destination->path);
+      kfree(destination);
+    }
+    return CLI_ERROR;
+  }
+  result = fs_move(source->tail_node, destination->tail_node);
+  kfree(source->path);
+  kfree(source);
+  kfree(destination->path);
+  kfree(destination);
+  return result ? CLI_SUCCESS : CLI_ERROR;
 }

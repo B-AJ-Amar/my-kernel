@@ -32,5 +32,6 @@ void pit_init(uint32_t frequency);
 void pit_interrupt_handler(interupt_registers_t *regs);
 void pit_wait(uint32_t ms);
 void pit_wait_sec(uint32_t sec);
+uint64_t pit_get_ticks(void);
 
 #endif

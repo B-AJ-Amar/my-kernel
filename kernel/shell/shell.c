@@ -23,6 +23,12 @@ void shell_init(void) {
   cli_register("read", "read file", cmd_cat);
   cli_register("write", "write quoted content to a file", cmd_write);
   cli_register("edit", "open the text editor", cmd_edit);
+  cli_register("print", "print text to the console", cmd_print);
+  cli_register("info", "show CPU information", cmd_info);
+  cli_register("tree", "show a directory tree", cmd_tree);
+  cli_register("uptime", "show system uptime", cmd_uptime);
+  cli_register("rename", "rename a file or directory", cmd_rename);
+  cli_register("move", "move a file or directory", cmd_move);
   cli_register("history", "show command history", cmd_history);
   cli_register("help", "show available commands", cmd_help);
 }

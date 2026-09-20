@@ -35,8 +35,8 @@ void fs_init() {
   fs_mkdir("/home/amar", "documents");
   fs_mkdir("/home/amar", "downloads");
   fs_mkdir("/home/amar", "notes");
-  fs_mkdir("/home/amar/notes", "personal");
-  fs_mkdir("/home/amar/notes", "work");
+  fs_touch("/home/amar/notes", "personal");
+  fs_touch("/home/amar/notes", "work");
   fs_mkdir("/home/amar", "pictures");
 
   fs_create(root_node, FS_DIR, "data");
@@ -104,6 +104,67 @@ bool fs_create(fs_node_t *parent, fs_node_type_t type, const char *name) {
   }
 
   parent->children.items[parent->children.count++] = new_node;
+  return true;
+}
+
+bool fs_rename(fs_node_t *node, const char *new_name) {
+  if (!node || !node->parent || !new_name || validate_filename(new_name) != 0)
+    return false;
+
+  for (size_t i = 0; i < node->parent->children.count; i++) {
+    fs_node_t *sibling = node->parent->children.items[i];
+    if (sibling != node && strcmp(sibling->name, new_name) == 0)
+      return false;
+  }
+
+  snprintf(node->name, sizeof(node->name), "%s", new_name);
+  return true;
+}
+
+bool fs_move(fs_node_t *node, fs_node_t *new_parent) {
+  fs_node_t *ancestor;
+  size_t index;
+
+  if (!node || !new_parent || !node->parent || new_parent->type != FS_DIR ||
+      node == root_node)
+    return false;
+
+  if (check_duplicate_child(new_parent, node->name))
+    return false;
+
+  ancestor = new_parent;
+  while (ancestor != NULL) {
+    if (ancestor == node)
+      return false;
+    ancestor = ancestor->parent;
+  }
+
+  index = 0;
+  while (index < node->parent->children.count &&
+         node->parent->children.items[index] != node)
+    index++;
+  if (index == node->parent->children.count)
+    return false;
+
+  if (new_parent->children.count == new_parent->children.capacity) {
+    size_t capacity = new_parent->children.capacity == 0
+                          ? 2
+                          : new_parent->children.capacity * 2;
+    fs_node_t **items = (fs_node_t **)krealloc(new_parent->children.items,
+                                               capacity * sizeof(fs_node_t *));
+    if (!items)
+      return false;
+    new_parent->children.items = items;
+    new_parent->children.capacity = capacity;
+  }
+
+  for (; index + 1 < node->parent->children.count; index++)
+    node->parent->children.items[index] =
+        node->parent->children.items[index + 1];
+  node->parent->children.count--;
+
+  new_parent->children.items[new_parent->children.count++] = node;
+  node->parent = new_parent;
   return true;
 }
 

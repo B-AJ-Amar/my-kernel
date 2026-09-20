@@ -16,5 +16,11 @@ int cmd_write(cli_context_t *context, cli_cmd_t *command);
 int cmd_history(cli_context_t *context, cli_cmd_t *command);
 int cmd_help(cli_context_t *context, cli_cmd_t *command);
 int cmd_edit(cli_context_t *context, cli_cmd_t *command);
+int cmd_print(cli_context_t *context, cli_cmd_t *command);
+int cmd_info(cli_context_t *context, cli_cmd_t *command);
+int cmd_uptime(cli_context_t *context, cli_cmd_t *command);
+int cmd_tree(cli_context_t *context, cli_cmd_t *command);
+int cmd_rename(cli_context_t *context, cli_cmd_t *command);
+int cmd_move(cli_context_t *context, cli_cmd_t *command);
 
 #endif

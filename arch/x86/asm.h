@@ -40,4 +40,11 @@ void disable_interrupts(void);
 uintptr_t get_cr2(void);
 uintptr_t get_cr3(void);
 
+static inline void cpuid(uint32_t leaf, uint32_t *eax, uint32_t *ebx,
+                         uint32_t *ecx, uint32_t *edx) {
+  __asm__ volatile("cpuid"
+                   : "=a"(*eax), "=b"(*ebx), "=c"(*ecx), "=d"(*edx)
+                   : "a"(leaf));
+}
+
 #endif
