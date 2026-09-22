@@ -5,6 +5,13 @@ An educational x86 operating system written from scratch in **C** and **x86 Asse
 
 The goal of this project is to understand how operating systems work by implementing every major component manually, starting from the  boot  and gradually building toward a complete kernel. Rather than relying on existing bootloaders or operating system frameworks, this project uses a custom bootloader and focuses on learning the low-level details of computer architecture.
 
+---
+<video width="640" height="360" controls>
+  <source src="./docs/k_.mp4" type="video/mp4">
+</video>
+
+---
+
 ## Build
 
 ### Requirements
